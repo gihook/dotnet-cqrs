@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using Autofac.Extensions.DependencyInjection;
+using System.IO;
 
 namespace WebAPI
 {
@@ -10,11 +12,20 @@ namespace WebAPI
             CreateHostBuilder(args).Build().Run();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
+        public static IHostBuilder CreateHostBuilder(string[] args)
+        {
+            var serviceProviderFactory = new AutofacServiceProviderFactory();
+            var host = Host.CreateDefaultBuilder(args)
+            .UseServiceProviderFactory(serviceProviderFactory)
+        .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>();
+                    var rootDirectory = Directory.GetCurrentDirectory();
+                    webBuilder.UseContentRoot(rootDirectory)
+                                .UseStartup<Startup>();
                 });
+
+
+            return host;
+        }
     }
 }
