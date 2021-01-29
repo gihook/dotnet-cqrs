@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using Autofac.Features.Indexed;
 using WebAPI.ActionInterfaces;
 using WebAPI.ActionModels;
@@ -15,11 +16,33 @@ namespace WebAPI.ActionCore
 
         public IAction CreateAction(ActionDescription actionDescription)
         {
-            System.Console.WriteLine($"Action: {actionDescription.ActionName}");
             var action = _serviceDictionary[actionDescription.ActionName];
-            System.Console.WriteLine($"parsed: {action}");
+            var actionType = action.GetType();
+
+            foreach (var parameter in actionDescription.Parameters)
+            {
+                var propertyName = UppercaseFirst(parameter.Key);
+                System.Console.WriteLine($"propertyName: {propertyName}");
+                var property = actionType.GetProperty(propertyName);
+
+                var propertyType = property.PropertyType;
+                System.Console.WriteLine($"property: {propertyType}");
+
+                var converter = TypeDescriptor.GetConverter(propertyType);
+                System.Console.WriteLine($"converter: {converter}");
+
+                var convertedValue = converter.ConvertFrom(parameter.Value);
+                System.Console.WriteLine($"value: {convertedValue}");
+
+                property.SetValue(action, convertedValue);
+            }
 
             return action;
+        }
+
+        private string UppercaseFirst(string str)
+        {
+            return char.ToUpper(str[0]) + str.Substring(1);
         }
     }
 }

@@ -7,9 +7,12 @@ namespace WebAPI.Actions
 {
     public class DummyAction : Command
     {
+        public int Count { get; set; }
+        public string Title { get; set; }
+
         public override object Execute(Executor executor)
         {
-            return "Is it working?";
+            return $"Is it working? with count: {Count} and title {Title}";
         }
 
         public override IEnumerable<ValidationError> Validate(Executor executor)

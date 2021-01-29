@@ -29,6 +29,7 @@ namespace WebAPI.Controllers
                 Parameters = dictionary
             };
 
+            // TODO: read from access token
             var executor = new Executor();
             var action = _actionParser.CreateAction(actionDescription);
             var result = _actionExecutor.Execute(action, executor);

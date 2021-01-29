@@ -35,9 +35,11 @@ namespace WebAPI
 
         public void ConfigureContainer(ContainerBuilder builder)
         {
+            // TODO: investigate module registration
             /* builder.RegisterModule(new MyApplicationModule()); */
             builder.RegisterType<ActionParser>().As<IActionParser>();
             builder.RegisterType<ActionExecutor>().As<IActionExecutor>();
+            // TODO: automatize
             builder.RegisterType<DummyAction>().Keyed<IAction>("DummyAction");
         }
 
