@@ -5,7 +5,7 @@ using WebAPI.ActionModels;
 
 namespace WebAPI.Actions
 {
-    public class DummyAction : Command
+    public class DummyCommand : Command
     {
         public int Count { get; set; }
         public string Title { get; set; }
