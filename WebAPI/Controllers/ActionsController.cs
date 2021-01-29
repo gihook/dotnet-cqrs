@@ -30,7 +30,7 @@ namespace WebAPI.Controllers
             };
 
             var executor = new Executor();
-            var action = _actionParser.CreateAction<object>(actionDescription);
+            var action = _actionParser.CreateAction(actionDescription);
             var result = _actionExecutor.Execute(action, executor);
 
             return Ok(result);

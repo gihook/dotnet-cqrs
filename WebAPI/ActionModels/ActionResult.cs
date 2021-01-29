@@ -3,10 +3,10 @@ using System.Linq;
 
 namespace WebAPI.ActionModels
 {
-    public class ActionResult<T>
+    public class ActionResult
     {
         public ActionResultStatus ResultStatus { get; set; }
-        public T ResultData { get; set; }
+        public object ResultData { get; set; }
         public IEnumerable<ValidationError> ValidationErrors { get; set; }
 
         public ActionResult()

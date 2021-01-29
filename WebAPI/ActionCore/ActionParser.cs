@@ -1,3 +1,4 @@
+using Autofac.Features.Indexed;
 using WebAPI.ActionInterfaces;
 using WebAPI.ActionModels;
 
@@ -5,9 +6,20 @@ namespace WebAPI.ActionCore
 {
     public class ActionParser : IActionParser
     {
-        public IAction<T> CreateAction<T>(ActionDescription actionDescription)
+        private readonly IIndex<string, IAction> _serviceDictionary;
+
+        public ActionParser(IIndex<string, IAction> serviceDictionary)
         {
-            return null;
+            _serviceDictionary = serviceDictionary;
+        }
+
+        public IAction CreateAction(ActionDescription actionDescription)
+        {
+            System.Console.WriteLine($"Action: {actionDescription.ActionName}");
+            var action = _serviceDictionary[actionDescription.ActionName];
+            System.Console.WriteLine($"parsed: {action}");
+
+            return action;
         }
     }
 }

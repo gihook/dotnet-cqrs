@@ -5,6 +5,6 @@ namespace WebAPI.ActionInterfaces
 {
     public interface IActionExecutor
     {
-        ActionResult<T> Execute<T>(IAction<T> action, Executor executor);
+        ActionResult Execute(IAction action, Executor executor);
     }
 }

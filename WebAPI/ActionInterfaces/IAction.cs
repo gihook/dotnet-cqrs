@@ -3,9 +3,9 @@ using WebAPI.ActionModels;
 
 namespace WebAPI.ActionInterfaces
 {
-    public interface IAction<T>
+    public interface IAction
     {
         IEnumerable<ValidationError> Validate(Executor executor);
-        T Execute(Executor executor);
+        object Execute(Executor executor);
     }
 }

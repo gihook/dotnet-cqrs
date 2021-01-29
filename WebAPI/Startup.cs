@@ -5,9 +5,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using WebAPI.ActionCore;
 using WebAPI.ActionInterfaces;
+using WebAPI.Actions;
 
 namespace WebAPI
 {
@@ -38,6 +38,7 @@ namespace WebAPI
             /* builder.RegisterModule(new MyApplicationModule()); */
             builder.RegisterType<ActionParser>().As<IActionParser>();
             builder.RegisterType<ActionExecutor>().As<IActionExecutor>();
+            builder.RegisterType<DummyAction>().Keyed<IAction>("DummyAction");
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
