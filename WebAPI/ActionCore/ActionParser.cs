@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel;
 using Autofac.Features.Indexed;
 using WebAPI.ActionInterfaces;
@@ -17,27 +18,25 @@ namespace WebAPI.ActionCore
         public IAction CreateAction(ActionDescription actionDescription)
         {
             var action = _serviceDictionary[actionDescription.ActionName];
-            var actionType = action.GetType();
 
             foreach (var parameter in actionDescription.Parameters)
             {
-                var propertyName = UppercaseFirst(parameter.Key);
-                System.Console.WriteLine($"propertyName: {propertyName}");
-                var property = actionType.GetProperty(propertyName);
-
-                var propertyType = property.PropertyType;
-                System.Console.WriteLine($"property: {propertyType}");
-
-                var converter = TypeDescriptor.GetConverter(propertyType);
-                System.Console.WriteLine($"converter: {converter}");
-
-                var convertedValue = converter.ConvertFrom(parameter.Value);
-                System.Console.WriteLine($"value: {convertedValue}");
-
-                property.SetValue(action, convertedValue);
+                SetConvertedValue(action, parameter);
             }
 
             return action;
+        }
+
+        private void SetConvertedValue(IAction action, KeyValuePair<string, object> parameter)
+        {
+            var actionType = action.GetType();
+            var propertyName = UppercaseFirst(parameter.Key);
+            var property = actionType.GetProperty(propertyName);
+            var propertyType = property.PropertyType;
+            var converter = TypeDescriptor.GetConverter(propertyType);
+            var convertedValue = converter.ConvertFrom(parameter.Value);
+
+            property.SetValue(action, convertedValue);
         }
 
         private string UppercaseFirst(string str)
