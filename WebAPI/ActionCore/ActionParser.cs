@@ -3,6 +3,7 @@ using System.ComponentModel;
 using Autofac.Features.Indexed;
 using WebAPI.ActionInterfaces;
 using WebAPI.ActionModels;
+using Newtonsoft.Json;
 
 namespace WebAPI.ActionCore
 {
@@ -13,6 +14,16 @@ namespace WebAPI.ActionCore
         public ActionParser(IIndex<string, IAction> serviceDictionary)
         {
             _serviceDictionary = serviceDictionary;
+        }
+
+        public IAction ParseJson(string actionName, string json)
+        {
+            var action = _serviceDictionary[actionName];
+            var actionType = action.GetType();
+            var actionWithParams = JsonConvert.DeserializeObject(json, actionType);
+            System.Console.WriteLine(actionWithParams);
+
+            return actionWithParams as IAction;
         }
 
         public IAction CreateAction(ActionDescription actionDescription)

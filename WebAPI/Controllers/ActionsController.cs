@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.ActionInterfaces;
 using WebAPI.ActionModels;
@@ -38,20 +40,24 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("command/{actionName}")]
-        public IActionResult ExecuteCommand(string actionName, [FromBody] Dictionary<string, object> parameters)
+        public async Task<IActionResult> ExecuteCommand(string actionName)
         {
-            var actionDescription = new ActionDescription
-            {
-                ActionName = actionName,
-                Parameters = parameters
-            };
-
+            var body = await ReadBody();
             var executor = GetExecutor();
-            var action = _actionParser.CreateAction(actionDescription);
-            System.Console.WriteLine(action);
+            var action = _actionParser.ParseJson(actionName, body);
             var result = _actionExecutor.Execute(action, executor);
 
-            return Ok(parameters);
+            return Ok(result);
+        }
+
+        private async Task<string> ReadBody()
+        {
+            var request = Request.Body;
+            var body = await new StreamReader(request).ReadToEndAsync();
+
+            System.Console.WriteLine("body: " + body);
+
+            return body;
         }
 
         private Executor GetExecutor()
