@@ -42,6 +42,7 @@ namespace WebAPI
             // TODO: automatize
             builder.RegisterType<DummyCommand>().Keyed<IAction>(typeof(DummyCommand).Name);
             builder.RegisterType<DummyQuery>().Keyed<IAction>(typeof(DummyQuery).Name);
+            builder.RegisterType<ActionInfoProvider>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
