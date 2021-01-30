@@ -5,14 +5,28 @@ using WebAPI.ActionModels;
 
 namespace WebAPI.Actions
 {
-    public class DummyCommand : Command<string>
+    public class Result
+    {
+        public string Message { get; set; }
+        public IEnumerable<string> Scopes { get; set; }
+    }
+
+    public class DummyCommand : Command<Result>
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public IEnumerable<string> Scopes { get; set; }
 
-        protected override string ExecuteInternal(Executor executor)
+        protected override Result ExecuteInternal(Executor executor)
         {
-            return $"Is it working? with name: {Name} and id: {Id}";
+            var message = $"Is it working? with name: {Name} and id: {Id}";
+            var result = new Result
+            {
+                Message = message,
+                Scopes = Scopes
+            };
+
+            return result;
         }
 
         public override IEnumerable<ValidationError> Validate(Executor executor)

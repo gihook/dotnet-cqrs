@@ -20,10 +20,10 @@ namespace WebAPI.ActionCore
         {
             var action = _serviceDictionary[actionName];
             var actionType = action.GetType();
-            var actionWithParams = JsonConvert.DeserializeObject(json, actionType);
-            System.Console.WriteLine(actionWithParams);
+            var actionWithParams = JsonConvert.DeserializeObject(json, actionType) as IAction;
+            BindProperties(action, actionWithParams);
 
-            return actionWithParams as IAction;
+            return action;
         }
 
         public IAction CreateAction(ActionDescription actionDescription)
@@ -38,12 +38,25 @@ namespace WebAPI.ActionCore
             return action;
         }
 
+        private void BindProperties(IAction actionFromServices, IAction actionFromJson)
+        {
+            var actionType = actionFromServices.GetType();
+            var properties = actionType.GetProperties();
+
+            foreach (var property in properties)
+            {
+                var propertyValue = property.GetValue(actionFromJson);
+                property.SetValue(actionFromServices, propertyValue);
+            }
+        }
+
         private void SetConvertedValue(IAction action, KeyValuePair<string, object> parameter)
         {
             var actionType = action.GetType();
             var propertyName = UppercaseFirst(parameter.Key);
             var property = actionType.GetProperty(propertyName);
             var propertyType = property.PropertyType;
+
             var converter = TypeDescriptor.GetConverter(propertyType);
             var convertedValue = converter.ConvertFrom(parameter.Value);
 
