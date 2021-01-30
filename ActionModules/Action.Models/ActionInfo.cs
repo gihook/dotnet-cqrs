@@ -8,5 +8,6 @@ namespace Action.Models
         public string Type { get; set; }
         public string FullName { get; set; }
         public IEnumerable<ActionParameter> Parameters { get; set; }
+        public string ReturnType { get; set; }
     }
 }

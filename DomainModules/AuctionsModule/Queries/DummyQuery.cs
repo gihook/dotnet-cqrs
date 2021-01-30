@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Action.Interfaces;
 using Action.Models;
 
@@ -10,13 +11,15 @@ namespace AuctionModule.Queries
         public int Count { get; set; }
         public string Title { get; set; }
 
-        protected override string ExecuteInternal(Executor executor)
+        protected override Task<string> ExecuteInternal(Executor executor)
         {
-            return $"Is it working? with count: {Count} and title {Title}";
+            var result = $"Is it working? with count: {Count} and title {Title}";
+            return Task.FromResult(result);
         }
 
-        public override IEnumerable<ValidationError> Validate(Executor executor)
+        public override async Task<IEnumerable<ValidationError>> Validate(Executor executor)
         {
+            await Task.CompletedTask;
             return Enumerable.Empty<ValidationError>();
         }
     }

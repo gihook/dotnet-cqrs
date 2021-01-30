@@ -1,3 +1,5 @@
+using System.Linq;
+using System.Threading.Tasks;
 using Action.Interfaces;
 using Action.Models;
 
@@ -5,18 +7,18 @@ namespace Action.Core
 {
     public class ActionExecutor : IActionExecutor
     {
-        public ActionResult Execute(IAction action, Executor executor)
+        public async Task<ActionResult> Execute(IAction action, Executor executor)
         {
-            var errors = action.Validate(executor);
-            var data = action.Execute(executor);
+            var isAuthorized = await action.IsAuthorized(executor);
+            if (!isAuthorized) return ActionResult.Unauthorized();
 
-            var actionResult = new ActionResult
-            {
-                ResultStatus = ActionResultStatus.Ok,
-                ResultData = data
-            };
+            var errors = await action.Validate(executor);
 
-            return actionResult;
+            if (errors.Any()) return ActionResult.BadRequest(errors);
+
+            var data = await action.Execute(executor);
+
+            return ActionResult.OkRequest(data);
         }
     }
 }

@@ -1,17 +1,24 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Action.Models;
 
 namespace Action.Interfaces
 {
     public abstract class ActionImplementation<T> : IAction
     {
-        protected abstract T ExecuteInternal(Executor executor);
+        protected abstract Task<T> ExecuteInternal(Executor executor);
 
-        public object Execute(Executor executor)
+        public virtual async Task<bool> IsAuthorized(Executor executor)
         {
-            return ExecuteInternal(executor);
+            await Task.CompletedTask;
+            return true;
         }
 
-        public abstract IEnumerable<ValidationError> Validate(Executor executor);
+        public async Task<object> Execute(Executor executor)
+        {
+            return await ExecuteInternal(executor);
+        }
+
+        public abstract Task<IEnumerable<ValidationError>> Validate(Executor executor);
     }
 }

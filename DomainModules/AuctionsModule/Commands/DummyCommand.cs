@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Action.Interfaces;
 using Action.Models;
 
@@ -17,7 +18,7 @@ namespace AuctionModule.Commands
         public string Name { get; set; }
         public IEnumerable<string> Scopes { get; set; }
 
-        protected override Result ExecuteInternal(Executor executor)
+        protected override Task<Result> ExecuteInternal(Executor executor)
         {
             var message = $"Is it working? with name: {Name} and id: {Id}";
             var result = new Result
@@ -26,11 +27,12 @@ namespace AuctionModule.Commands
                 Scopes = Scopes
             };
 
-            return result;
+            return Task.FromResult(result);
         }
 
-        public override IEnumerable<ValidationError> Validate(Executor executor)
+        public override async Task<IEnumerable<ValidationError>> Validate(Executor executor)
         {
+            await Task.CompletedTask;
             return Enumerable.Empty<ValidationError>();
         }
     }

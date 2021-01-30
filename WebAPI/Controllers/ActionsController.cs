@@ -22,7 +22,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("query/{actionName}")]
-        public IActionResult ExecuteQuery(string actionName)
+        public async Task<IActionResult> ExecuteQuery(string actionName)
         {
             var parameters = Request.Query;
             var dictionary = parameters.ToDictionary(x => x.Key, x => x.Value.First() as object);
@@ -34,7 +34,7 @@ namespace WebAPI.Controllers
 
             var executor = GetExecutor();
             var action = _actionParser.CreateAction(actionDescription);
-            var result = _actionExecutor.Execute(action, executor);
+            var result = await _actionExecutor.Execute(action, executor);
 
             return Ok(result);
         }
@@ -45,7 +45,7 @@ namespace WebAPI.Controllers
             var body = await ReadBody();
             var executor = GetExecutor();
             var action = _actionParser.ParseJson(actionName, body);
-            var result = _actionExecutor.Execute(action, executor);
+            var result = await _actionExecutor.Execute(action, executor);
 
             return Ok(result);
         }

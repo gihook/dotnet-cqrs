@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Action.Models
 {
@@ -9,9 +8,33 @@ namespace Action.Models
         public object ResultData { get; set; }
         public IEnumerable<ValidationError> ValidationErrors { get; set; }
 
-        public ActionResult()
+        private ActionResult() { }
+
+        public static ActionResult BadRequest(IEnumerable<ValidationError> errors)
         {
-            ValidationErrors = Enumerable.Empty<ValidationError>();
+            return new ActionResult()
+            {
+                ResultStatus = ActionResultStatus.BadRequest,
+                ValidationErrors = errors
+            };
+        }
+
+        public static ActionResult OkRequest(object data)
+        {
+            return new ActionResult()
+            {
+                ResultStatus = ActionResultStatus.Ok,
+                ResultData = data
+            };
+        }
+
+
+        public static ActionResult Unauthorized()
+        {
+            return new ActionResult()
+            {
+                ResultStatus = ActionResultStatus.Unauthorized,
+            };
         }
     }
 }

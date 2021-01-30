@@ -32,17 +32,18 @@ namespace Action.Core
             var action = _serviceDictionary[actionName];
             var actionType = action.GetType();
             var properties = actionType.GetProperties();
-            var baseType = actionType.BaseType.Name;
-            var fullName = actionType.FullName;
+            var baseType = actionType.BaseType;
+            var returnType = baseType.GenericTypeArguments.First();
 
             var parameterInfos = properties.Select(GetParameterInfo);
 
             var actionInfo = new ActionInfo
             {
-                Type = baseType,
+                Type = baseType.Name,
                 Name = actionName,
-                FullName = fullName,
-                Parameters = parameterInfos
+                FullName = actionType.FullName,
+                Parameters = parameterInfos,
+                ReturnType = returnType.Name
             };
 
             return actionInfo;
