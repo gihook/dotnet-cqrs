@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Action.Interfaces;
 using Action.Models;
 using Microsoft.AspNetCore.Mvc;
+using ActionResult = Action.Models.ActionResult;
 
 namespace WebAPI.Controllers
 {
@@ -36,7 +37,7 @@ namespace WebAPI.Controllers
             var action = _actionParser.CreateAction(actionDescription);
             var result = await _actionExecutor.Execute(action, executor);
 
-            return Ok(result);
+            return HandleResult(result);
         }
 
         [HttpPost("command/{actionName}")]
@@ -47,7 +48,7 @@ namespace WebAPI.Controllers
             var action = _actionParser.ParseJson(actionName, body);
             var result = await _actionExecutor.Execute(action, executor);
 
-            return Ok(result);
+            return HandleResult(result);
         }
 
         [HttpGet("info/{actionName}")]
@@ -66,6 +67,15 @@ namespace WebAPI.Controllers
             return Ok(infos);
         }
 
+        private IActionResult HandleResult(ActionResult result)
+        {
+            if (result.ResultStatus == ActionResultStatus.Unauthorized) return Unauthorized(result);
+            if (result.ResultStatus == ActionResultStatus.BadRequest) return BadRequest(result);
+            if (result.ResultStatus == ActionResultStatus.Ok) return Ok(result);
+
+            return BadRequest();
+        }
+
         private async Task<string> ReadBody()
         {
             using (var streamReader = new StreamReader(Request.Body))
@@ -80,7 +90,10 @@ namespace WebAPI.Controllers
         private Executor GetExecutor()
         {
             // TODO: read from access token
-            return new Executor();
+            var executor = new Executor();
+            executor.Scopes = new string[] { "Admin" };
+
+            return executor;
         }
     }
 }
