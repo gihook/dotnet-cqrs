@@ -59,12 +59,23 @@ namespace WebAPI.Controllers
             return Ok(info);
         }
 
+        [HttpGet("actions")]
+        public IActionResult GetAllActions()
+        {
+            var infos = _actionInfoProvider.AllActionInfos();
+
+            return Ok(infos);
+        }
+
         private async Task<string> ReadBody()
         {
-            var request = Request.Body;
-            var body = await new StreamReader(request).ReadToEndAsync();
+            using (var streamReader = new StreamReader(Request.Body))
+            {
+                var body = await streamReader.ReadToEndAsync();
 
-            return body;
+                return body;
+            }
+
         }
 
         private Executor GetExecutor()

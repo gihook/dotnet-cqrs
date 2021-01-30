@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Autofac;
 using Autofac.Features.Indexed;
 using WebAPI.ActionInterfaces;
 using WebAPI.ActionModels;
@@ -9,10 +11,20 @@ namespace WebAPI.ActionCore
     public class ActionInfoProvider
     {
         private readonly IIndex<string, IAction> _serviceDictionary;
+        private readonly ILifetimeScope _scope;
 
-        public ActionInfoProvider(IIndex<string, IAction> serviceDictionary)
+        public ActionInfoProvider(IIndex<string, IAction> serviceDictionary,
+            ILifetimeScope scope)
         {
             _serviceDictionary = serviceDictionary;
+            _scope = scope;
+        }
+
+        public IEnumerable<ActionInfo> AllActionInfos()
+        {
+            return _scope.ComponentRegistry.Registrations
+         .Where(r => typeof(IAction).IsAssignableFrom(r.Activator.LimitType))
+         .Select(r => r.Activator.LimitType.Name).Select(GetActionInfo);
         }
 
         public ActionInfo GetActionInfo(string actionName)
