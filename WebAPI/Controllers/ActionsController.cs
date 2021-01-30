@@ -30,7 +30,7 @@ namespace WebAPI.Controllers
             };
 
             // TODO: read from access token
-            var executor = new Executor();
+            var executor = GetExecutor();
             var action = _actionParser.CreateAction(actionDescription);
             var result = _actionExecutor.Execute(action, executor);
 
@@ -46,7 +46,17 @@ namespace WebAPI.Controllers
                 Parameters = parameters
             };
 
+            var executor = GetExecutor();
+            var action = _actionParser.CreateAction(actionDescription);
+            System.Console.WriteLine(action);
+            var result = _actionExecutor.Execute(action, executor);
+
             return Ok(parameters);
+        }
+
+        private Executor GetExecutor()
+        {
+            return new Executor();
         }
     }
 }

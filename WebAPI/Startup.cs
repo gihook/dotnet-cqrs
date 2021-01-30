@@ -40,8 +40,8 @@ namespace WebAPI
             builder.RegisterType<ActionParser>().As<IActionParser>();
             builder.RegisterType<ActionExecutor>().As<IActionExecutor>();
             // TODO: automatize
-            var name = typeof(DummyCommand).Name;
-            builder.RegisterType<DummyCommand>().Keyed<IAction>(name);
+            builder.RegisterType<DummyCommand>().Keyed<IAction>(typeof(DummyCommand).Name);
+            builder.RegisterType<DummyQuery>().Keyed<IAction>(typeof(DummyQuery).Name);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

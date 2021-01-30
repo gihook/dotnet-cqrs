@@ -5,14 +5,14 @@ using WebAPI.ActionModels;
 
 namespace WebAPI.Actions
 {
-    public class DummyCommand : Command
+    public class DummyCommand : Command<string>
     {
-        public int Count { get; set; }
-        public string Title { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
 
-        public override object Execute(Executor executor)
+        protected override string ExecuteInternal(Executor executor)
         {
-            return $"Is it working? with count: {Count} and title {Title}";
+            return $"Is it working? with name: {Name} and id: {Id}";
         }
 
         public override IEnumerable<ValidationError> Validate(Executor executor)
