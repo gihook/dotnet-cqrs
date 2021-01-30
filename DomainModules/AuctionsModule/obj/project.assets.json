@@ -25,6 +25,29 @@
         "build": {
           "build/netstandard2.0/NETStandard.Library.targets": {}
         }
+      },
+      "Action.Interfaces/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.0",
+        "dependencies": {
+          "Action.Models": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Action.Interfaces.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Action.Interfaces.dll": {}
+        }
+      },
+      "Action.Models/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.0",
+        "compile": {
+          "bin/placeholder/Action.Models.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Action.Models.dll": {}
+        }
       }
     }
   },
@@ -172,10 +195,22 @@
         "netstandard.library.2.0.3.nupkg.sha512",
         "netstandard.library.nuspec"
       ]
+    },
+    "Action.Interfaces/1.0.0": {
+      "type": "project",
+      "path": "../../ActionModules/Action.Interfaces/Action.Interfaces.csproj",
+      "msbuildProject": "../../ActionModules/Action.Interfaces/Action.Interfaces.csproj"
+    },
+    "Action.Models/1.0.0": {
+      "type": "project",
+      "path": "../../ActionModules/Action.Models/Action.Models.csproj",
+      "msbuildProject": "../../ActionModules/Action.Models/Action.Models.csproj"
     }
   },
   "projectFileDependencyGroups": {
     ".NETStandard,Version=v2.0": [
+      "Action.Interfaces >= 1.0.0",
+      "Action.Models >= 1.0.0",
       "NETStandard.Library >= 2.0.3"
     ]
   },
@@ -202,7 +237,14 @@
       },
       "frameworks": {
         "netstandard2.0": {
-          "projectReferences": {}
+          "projectReferences": {
+            "/home/nikola/playground/dotnet/dotnet-actions/ActionModules/Action.Interfaces/Action.Interfaces.csproj": {
+              "projectPath": "/home/nikola/playground/dotnet/dotnet-actions/ActionModules/Action.Interfaces/Action.Interfaces.csproj"
+            },
+            "/home/nikola/playground/dotnet/dotnet-actions/ActionModules/Action.Models/Action.Models.csproj": {
+              "projectPath": "/home/nikola/playground/dotnet/dotnet-actions/ActionModules/Action.Models/Action.Models.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

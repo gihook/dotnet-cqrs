@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\ActionModules\Action.Core\Action.Core.csproj" />
+    <ProjectReference Include="..\..\DomainModules\AuctionsModule\AuctionsModule.csproj" />
   </ItemGroup>
 
 </Project>

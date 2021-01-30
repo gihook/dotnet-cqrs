@@ -1,5 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\ActionModules\Action.Interfaces\Action.Interfaces.csproj" />
+    <ProjectReference Include="..\..\ActionModules\Action.Models\Action.Models.csproj" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
