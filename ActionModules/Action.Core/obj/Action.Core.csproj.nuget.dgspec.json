@@ -24,6 +24,131 @@
         },
         "frameworks": {
           "netstandard2.0": {
+            "projectReferences": {
+              "/home/nikola/playground/dotnet/dotnet-actions/ActionModules/Action.Interfaces/Action.Interfaces.csproj": {
+                "projectPath": "/home/nikola/playground/dotnet/dotnet-actions/ActionModules/Action.Interfaces/Action.Interfaces.csproj"
+              },
+              "/home/nikola/playground/dotnet/dotnet-actions/ActionModules/Action.Models/Action.Models.csproj": {
+                "projectPath": "/home/nikola/playground/dotnet/dotnet-actions/ActionModules/Action.Models/Action.Models.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netstandard2.0": {
+          "dependencies": {
+            "Autofac.Extensions.DependencyInjection": {
+              "target": "Package",
+              "version": "[7.1.0, )"
+            },
+            "NETStandard.Library": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.0.3, )",
+              "autoReferenced": true
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[12.0.3, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/3.1.108/RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/nikola/playground/dotnet/dotnet-actions/ActionModules/Action.Interfaces/Action.Interfaces.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/nikola/playground/dotnet/dotnet-actions/ActionModules/Action.Interfaces/Action.Interfaces.csproj",
+        "projectName": "Action.Interfaces",
+        "projectPath": "/home/nikola/playground/dotnet/dotnet-actions/ActionModules/Action.Interfaces/Action.Interfaces.csproj",
+        "packagesPath": "/home/nikola/.nuget/packages/",
+        "outputPath": "/home/nikola/playground/dotnet/dotnet-actions/ActionModules/Action.Interfaces/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/nikola/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.0": {
+            "projectReferences": {
+              "/home/nikola/playground/dotnet/dotnet-actions/ActionModules/Action.Models/Action.Models.csproj": {
+                "projectPath": "/home/nikola/playground/dotnet/dotnet-actions/ActionModules/Action.Models/Action.Models.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netstandard2.0": {
+          "dependencies": {
+            "NETStandard.Library": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.0.3, )",
+              "autoReferenced": true
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/3.1.108/RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/nikola/playground/dotnet/dotnet-actions/ActionModules/Action.Models/Action.Models.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/nikola/playground/dotnet/dotnet-actions/ActionModules/Action.Models/Action.Models.csproj",
+        "projectName": "Action.Models",
+        "projectPath": "/home/nikola/playground/dotnet/dotnet-actions/ActionModules/Action.Models/Action.Models.csproj",
+        "packagesPath": "/home/nikola/.nuget/packages/",
+        "outputPath": "/home/nikola/playground/dotnet/dotnet-actions/ActionModules/Action.Models/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/nikola/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.0": {
             "projectReferences": {}
           }
         },
