@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -31,7 +30,6 @@ namespace WebAPI.Controllers
                 Parameters = dictionary
             };
 
-            // TODO: read from access token
             var executor = GetExecutor();
             var action = _actionParser.CreateAction(actionDescription);
             var result = _actionExecutor.Execute(action, executor);
@@ -55,13 +53,12 @@ namespace WebAPI.Controllers
             var request = Request.Body;
             var body = await new StreamReader(request).ReadToEndAsync();
 
-            System.Console.WriteLine("body: " + body);
-
             return body;
         }
 
         private Executor GetExecutor()
         {
+            // TODO: read from access token
             return new Executor();
         }
     }
