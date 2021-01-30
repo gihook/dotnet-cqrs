@@ -6,8 +6,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using InjectionConfig;
-using WebAPI.Actions;
-using Action.Interfaces;
 
 namespace WebAPI
 {
@@ -35,12 +33,7 @@ namespace WebAPI
 
         public void ConfigureContainer(ContainerBuilder builder)
         {
-            // TODO: investigate module registration
-            /* builder.RegisterModule(new MyApplicationModule()); */
-            // TODO: automatize
             ConfigureInjection.Configure(builder);
-            builder.RegisterType<DummyCommand>().Keyed<IAction>(typeof(DummyCommand).Name);
-            builder.RegisterType<DummyQuery>().Keyed<IAction>(typeof(DummyQuery).Name);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

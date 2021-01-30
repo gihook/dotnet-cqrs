@@ -3,6 +3,7 @@ using Action.Core;
 using Action.Interfaces;
 using System.Linq;
 using AuctionModule.Commands;
+using System;
 
 namespace InjectionConfig
 {
@@ -23,15 +24,19 @@ namespace InjectionConfig
         private static void RegisterAllActionsFromModule<T>(ContainerBuilder builder)
         {
             var types = typeof(T).Assembly.GetTypes();
-            var names = types.Select(t => t.Name);
-            var actions = types;
+            var actions = types.Where(IsAction);
 
             foreach (var action in actions)
             {
                 var name = action.Name;
-                System.Console.WriteLine("action: " + name);
                 builder.RegisterType(action).Keyed(name, typeof(IAction));
             }
+        }
+
+        private static bool IsAction(Type type)
+        {
+            var interfaceType = typeof(IAction);
+            return interfaceType.IsAssignableFrom(type) && !type.IsInterface;
         }
     }
 }

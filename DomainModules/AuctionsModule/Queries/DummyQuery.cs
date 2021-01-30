@@ -3,7 +3,7 @@ using System.Linq;
 using Action.Interfaces;
 using Action.Models;
 
-namespace WebAPI.Actions
+namespace AuctionModule.Queries
 {
     public class DummyQuery : Query<string>
     {
