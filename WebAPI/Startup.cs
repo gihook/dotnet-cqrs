@@ -5,9 +5,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using WebAPI.ActionCore;
-using WebAPI.ActionInterfaces;
+using InjectionConfig;
 using WebAPI.Actions;
+using Action.Interfaces;
 
 namespace WebAPI
 {
@@ -37,12 +37,10 @@ namespace WebAPI
         {
             // TODO: investigate module registration
             /* builder.RegisterModule(new MyApplicationModule()); */
-            builder.RegisterType<ActionParser>().As<IActionParser>();
-            builder.RegisterType<ActionExecutor>().As<IActionExecutor>();
             // TODO: automatize
+            ConfigureInjection.Configure(builder);
             builder.RegisterType<DummyCommand>().Keyed<IAction>(typeof(DummyCommand).Name);
             builder.RegisterType<DummyQuery>().Keyed<IAction>(typeof(DummyQuery).Name);
-            builder.RegisterType<ActionInfoProvider>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

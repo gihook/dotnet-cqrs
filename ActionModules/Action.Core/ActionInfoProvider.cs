@@ -6,9 +6,9 @@ using Autofac.Features.Indexed;
 using Action.Interfaces;
 using Action.Models;
 
-namespace WebAPI.ActionCore
+namespace Action.Core
 {
-    public class ActionInfoProvider
+    public class ActionInfoProvider : IActionInfoProvider
     {
         private readonly IIndex<string, IAction> _serviceDictionary;
         private readonly ILifetimeScope _scope;

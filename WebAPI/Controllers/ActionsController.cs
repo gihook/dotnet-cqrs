@@ -1,10 +1,9 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Action.Interfaces;
+using Action.Models;
 using Microsoft.AspNetCore.Mvc;
-using WebAPI.ActionCore;
-using WebAPI.ActionInterfaces;
-using WebAPI.ActionModels;
 
 namespace WebAPI.Controllers
 {
@@ -13,9 +12,9 @@ namespace WebAPI.Controllers
     {
         private readonly IActionParser _actionParser;
         private readonly IActionExecutor _actionExecutor;
-        private readonly ActionInfoProvider _actionInfoProvider;
+        private readonly IActionInfoProvider _actionInfoProvider;
 
-        public ActionsController(IActionParser actionParser, IActionExecutor actionExecutor, ActionInfoProvider actionInfoProvider)
+        public ActionsController(IActionParser actionParser, IActionExecutor actionExecutor, IActionInfoProvider actionInfoProvider)
         {
             _actionParser = actionParser;
             _actionExecutor = actionExecutor;

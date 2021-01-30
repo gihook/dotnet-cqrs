@@ -9,5 +9,11 @@
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ActionModules\Action.Interfaces\Action.Interfaces.csproj" />
+    <ProjectReference Include="..\ActionModules\Action.Models\Action.Models.csproj" />
+    <ProjectReference Include="..\Util\InjectionConfig\InjectionConfig.csproj" />
+  </ItemGroup>
+
 
 </Project>

@@ -5,7 +5,7 @@ using Action.Interfaces;
 using Action.Models;
 using Newtonsoft.Json;
 
-namespace WebAPI.ActionCore
+namespace Action.Core
 {
     public class ActionParser : IActionParser
     {

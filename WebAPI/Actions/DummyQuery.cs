@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using WebAPI.ActionInterfaces;
-using WebAPI.ActionModels;
+using Action.Interfaces;
+using Action.Models;
 
 namespace WebAPI.Actions
 {

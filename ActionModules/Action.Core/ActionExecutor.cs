@@ -1,7 +1,7 @@
 using Action.Interfaces;
 using Action.Models;
 
-namespace WebAPI.ActionCore
+namespace Action.Core
 {
     public class ActionExecutor : IActionExecutor
     {
