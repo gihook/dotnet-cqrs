@@ -1,7 +1,19 @@
-DummyQuery:
-{{ queryResult | async | json }}
+<button (click)="callAllAuctions()">All Auctions</button>
+<button (click)="callCreateAuction()">Create Auction</button>
+<button (click)="callPlaceBid()">Place Bid</button>
 
-<br />
+<div class="container">
+  <div class="left">
+    Query Result:
+    <pre> {{ queryResult$ | async | json }} </pre>
 
-DummyCommand
-{{ commandResult | async | json }}
+    <br />
+
+    Command Result:
+    <pre>{{ commandResult$ | async | json }}</pre>
+  </div>
+  <div class="right">
+    Info:
+    <pre>{{ allActions$ | async | json }}</pre>
+  </div>
+</div>

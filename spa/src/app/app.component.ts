@@ -1,9 +1,12 @@
 import { Component } from '@angular/core';
 import { HttpActionExecutorService } from '../action-services/http-action-executor.service';
-import { DummyQuery } from '../actions/dummy-query';
-import { DummyCommand } from '../actions/dummy-command';
+import {
+  AllAuctions,
+  CreateAuction,
+  PlaceBid,
+} from '../actions/auction-module';
 import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { ActionDocumentationService } from '../action-services/action-documentation.service';
 
 @Component({
   selector: 'app-root',
@@ -11,24 +14,36 @@ import { tap } from 'rxjs/operators';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  queryResult: Observable<string>;
-  commandResult;
+  queryResult$: Observable<void>;
+  commandResult$: Observable<{}>;
+  allActions$: Observable<{}>;
 
-  constructor(private actionExecutor: HttpActionExecutorService) {}
+  constructor(
+    private actionExecutor: HttpActionExecutorService,
+    private actionDocumentationService: ActionDocumentationService
+  ) {}
 
   ngOnInit() {
-    this.queryResult = this.actionExecutor.executeQuery(
-      new DummyQuery({ title: 'Test Title', count: 1000 })
-    );
+    this.allActions$ = this.actionDocumentationService.getAllActions();
+  }
 
-    this.commandResult = this.actionExecutor
-      .executeCommand(
-        new DummyCommand({
-          id: 1234,
-          name: 'Nikola',
-          scopes: ['Test1', 'Test2'],
-        })
-      )
-      .pipe(tap((data) => console.log({ scopes: data.scopes })));
+  callPlaceBid() {
+    this.commandResult$ = this.actionExecutor.executeCommand(
+      new PlaceBid({ id: 1, priceValue: 2000 })
+    );
+  }
+
+  callCreateAuction() {
+    this.commandResult$ = this.actionExecutor.executeCommand(
+      new CreateAuction({
+        name: 'Angular Sales',
+        descritpion: 'Blah',
+        initialPrice: 100,
+      })
+    );
+  }
+
+  callAllAuctions() {
+    this.queryResult$ = this.actionExecutor.executeQuery(new AllAuctions());
   }
 }

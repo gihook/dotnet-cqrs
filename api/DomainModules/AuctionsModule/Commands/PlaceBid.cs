@@ -30,7 +30,7 @@ namespace AuctionModule.Commands
         {
             var auction = await _auctionService.GetById(Id);
             auction.CurrentPrice = PriceValue;
-            var result = await _auctionService.SaveAsync(auction);
+            var result = await _auctionService.UpdateAsync(auction);
 
             return result;
         }
