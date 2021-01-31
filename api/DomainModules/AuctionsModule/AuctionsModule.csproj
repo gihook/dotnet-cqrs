@@ -3,6 +3,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\ActionModules\Action.Interfaces\Action.Interfaces.csproj" />
     <ProjectReference Include="..\..\ActionModules\Action.Models\Action.Models.csproj" />
+    <ProjectReference Include="..\..\ImplementationDetails\Services.Interfaces\Services.Interfaces.csproj" />
+    <ProjectReference Include="..\..\ImplementationDetails\Models\Models.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

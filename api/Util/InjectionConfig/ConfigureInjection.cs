@@ -4,6 +4,8 @@ using Action.Interfaces;
 using System.Linq;
 using AuctionModule.Commands;
 using System;
+using Services;
+using DataAccess;
 
 namespace InjectionConfig
 {
@@ -11,7 +13,11 @@ namespace InjectionConfig
     {
         public static void Configure(ContainerBuilder builder)
         {
-            RegisterInjection.RegisterActionCore(builder);
+
+            builder
+            .RegisterActionCore()
+        .RegisterDataAccess()
+            .RegisterInjectedServices();
 
             // NOTE: use ANY class from domain module
             // this is the only way to automatically register

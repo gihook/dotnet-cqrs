@@ -11,6 +11,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\ActionModules\Action.Core\Action.Core.csproj" />
     <ProjectReference Include="..\..\DomainModules\AuctionsModule\AuctionsModule.csproj" />
+    <ProjectReference Include="..\..\ImplementationDetails\Services\Services.csproj" />
+    <ProjectReference Include="..\..\ImplementationDetails\DataAccess\DataAccess.csproj" />
   </ItemGroup>
 
 </Project>

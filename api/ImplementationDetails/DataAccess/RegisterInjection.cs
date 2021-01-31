@@ -6,8 +6,10 @@ namespace DataAccess
 {
     public static class RegisterInjection
     {
-        public static ContainerBuilder RegisterDataAccess(ContainerBuilder builder)
+        public static ContainerBuilder RegisterDataAccess(this ContainerBuilder builder)
         {
+            RegisterForTests(builder);
+
             return builder;
         }
 
