@@ -14,6 +14,9 @@ namespace DataAccess
         private static void RegisterForTests(ContainerBuilder builder)
         {
             builder.RegisterType<ConcurrentDictionary<int, Auction>>();
+            builder
+            .RegisterType<InMemoryGenericRepository<int, Auction>>()
+            .As<InMemoryGenericRepository<int, Auction>>();
         }
     }
 }

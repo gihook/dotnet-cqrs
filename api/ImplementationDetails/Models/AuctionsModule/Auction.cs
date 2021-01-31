@@ -1,10 +1,9 @@
-using System;
-using Models;
-
 namespace Models.AuctionsModule
 {
-    public class Auction : IEntity
+    public class Auction : BaseEntity<int>
     {
-        public Guid Id { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public string CurrentPrice { get; set; }
     }
 }

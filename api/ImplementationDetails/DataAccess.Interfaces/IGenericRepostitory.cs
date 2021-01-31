@@ -5,13 +5,15 @@ using Models;
 
 namespace DataAccess.Interfaces
 {
-    public interface IGenericRepostitory<T> where T : struct
+    public interface IGenericRepostitory<T, R>
+        where R : BaseEntity<T>
+        where T : struct
     {
-        Task<BaseEntity<T>> GetById(T id);
-        void Save(BaseEntity<T> entity);
+        Task<R> GetById(T id);
+        void Save(R entity);
         void Delete(T id);
-        Task<IEnumerable<BaseEntity<T>>> GetAll();
-        Task<IEnumerable<BaseEntity<T>>> GetSome(Func<BaseEntity<T>, bool> condition);
+        Task<IEnumerable<R>> GetAll();
+        Task<IEnumerable<R>> GetSome(Func<R, bool> condition);
         Task Apply();
     }
 }
