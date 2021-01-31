@@ -13,11 +13,12 @@ namespace DataAccess
     {
         private readonly ConcurrentDictionary<int, R> _dictionary;
 
-        private readonly List<Action<ConcurrentDictionary<int, R>>> _changes = new List<Action<ConcurrentDictionary<int, R>>>();
+        private List<Action<ConcurrentDictionary<int, R>>> _changes;
 
         public InMemoryGenericRepository(ConcurrentDictionary<int, R> dictionary)
         {
             _dictionary = dictionary;
+            ResetChanges();
         }
 
         public Task Apply()
@@ -27,7 +28,14 @@ namespace DataAccess
                 change(_dictionary);
             }
 
+            ResetChanges();
+
             return Task.CompletedTask;
+        }
+
+        private void ResetChanges()
+        {
+            _changes = new List<Action<ConcurrentDictionary<int, R>>>();
         }
 
         public void Delete(int id)
@@ -63,7 +71,7 @@ namespace DataAccess
 
         public void Update(R entity)
         {
-            _changes.Add(dict => SaveItem(entity, dict));
+            _changes.Add(dict => UpdateItem(entity, dict));
         }
 
         private void UpdateItem(R item, ConcurrentDictionary<int, R> dictionary)
