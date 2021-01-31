@@ -35,6 +35,20 @@ export class HttpActionExecutorService {
     return result;
   }
 
+  executeCommandByName(actionName: string, params: any) {
+    return this.httpClient.post(`/command/${actionName}`, params, {
+      headers: this.getHeaders(),
+    });
+  }
+
+  executeQueryByName(actionName: string, params: any) {
+    return this.httpClient.post(`/query/${actionName}`, {
+      params,
+      headers: this.getHeaders(),
+    });
+  }
+
+  // TODO: needs to pass access token
   private getHeaders() {
     return new HttpHeaders();
   }

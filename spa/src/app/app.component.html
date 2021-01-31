@@ -12,8 +12,20 @@
     Command Result:
     <pre>{{ commandResult$ | async | json }}</pre>
   </div>
-  <div class="right">
-    Info:
-    <pre>{{ allActions$ | async | json }}</pre>
+  <div class="right" *ngIf="allActions$ | async as allActions">
+    <form *ngFor="let action of allActions" class="action">
+      <p>{{ action.type }}: {{ action.name }}</p>
+      <div class="params">
+        <ng-container *ngFor="let param of action.parameters">
+          <div>
+            <label [for]="param.name"
+              >{{ param.name }} ({{ param.type }})</label
+            >
+            <input [name]="param.name" />
+          </div>
+        </ng-container>
+      </div>
+      <button (click)="executeAction(action, $event)">Execute</button>
+    </form>
   </div>
 </div>

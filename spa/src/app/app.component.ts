@@ -46,4 +46,25 @@ export class AppComponent {
   callAllAuctions() {
     this.queryResult$ = this.actionExecutor.executeQuery(new AllAuctions());
   }
+
+  // TOOD: naive implementation correct it
+  executeAction(action, $event: MouseEvent) {
+    $event.preventDefault();
+
+    const buttonElement = $event.srcElement as any;
+    const formElement = buttonElement.parentElement;
+    const formData: any = new FormData(formElement as any);
+    const entries = Array.from(formData.entries());
+    const params = entries.reduce((acc, [name, value]) => {
+      acc[name] = value;
+      return acc;
+    }, {});
+
+    const actionType: string = action.type.toLowerCase();
+    if (actionType.includes('query'))
+      this.actionExecutor.executeQueryByName(action.name, params).toPromise();
+
+    if (actionType.includes('command'))
+      this.actionExecutor.executeCommandByName(action.name, params).toPromise();
+  }
 }
