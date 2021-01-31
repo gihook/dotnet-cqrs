@@ -1,8 +1,0 @@
-/home/nikola/playground/dotnet/dotnet-actions/ActionModules/Action.Models/bin/Debug/netstandard2.0/Action.Models.deps.json
-/home/nikola/playground/dotnet/dotnet-actions/ActionModules/Action.Models/bin/Debug/netstandard2.0/Action.Models.dll
-/home/nikola/playground/dotnet/dotnet-actions/ActionModules/Action.Models/bin/Debug/netstandard2.0/Action.Models.pdb
-/home/nikola/playground/dotnet/dotnet-actions/ActionModules/Action.Models/obj/Debug/netstandard2.0/Action.Models.csprojAssemblyReference.cache
-/home/nikola/playground/dotnet/dotnet-actions/ActionModules/Action.Models/obj/Debug/netstandard2.0/Action.Models.AssemblyInfoInputs.cache
-/home/nikola/playground/dotnet/dotnet-actions/ActionModules/Action.Models/obj/Debug/netstandard2.0/Action.Models.AssemblyInfo.cs
-/home/nikola/playground/dotnet/dotnet-actions/ActionModules/Action.Models/obj/Debug/netstandard2.0/Action.Models.dll
-/home/nikola/playground/dotnet/dotnet-actions/ActionModules/Action.Models/obj/Debug/netstandard2.0/Action.Models.pdb
