@@ -29,6 +29,8 @@ namespace AuctionModule.Commands
 
         protected override async Task<Auction> ExecuteInternal(Executor executor)
         {
+            System.Console.Write("Executing action CreateAuction");
+
             var auction = new Auction
             {
                 Name = Name,

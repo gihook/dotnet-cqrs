@@ -14,10 +14,9 @@ namespace InjectionConfig
         public static void Configure(ContainerBuilder builder)
         {
 
-            builder
-            .RegisterActionCore()
-        .RegisterDataAccess()
-            .RegisterInjectedServices();
+            builder.RegisterDataAccess();
+            builder.RegisterInjectedServices();
+            builder.RegisterActionCore();
 
             // NOTE: use ANY class from domain module
             // this is the only way to automatically register

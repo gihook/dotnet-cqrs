@@ -20,7 +20,8 @@ namespace Action.Core
         {
             var action = _serviceDictionary[actionName];
             var actionType = action.GetType();
-            var actionWithParams = JsonConvert.DeserializeObject(json, actionType) as IAction;
+            var test = JsonConvert.DeserializeObject(json, actionType);
+            var actionWithParams = test as IAction;
             BindProperties(action, actionWithParams);
 
             return action;

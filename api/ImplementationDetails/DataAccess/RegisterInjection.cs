@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using Autofac;
+using DataAccess.Interfaces;
 using Models.AuctionsModule;
 
 namespace DataAccess
@@ -15,10 +16,12 @@ namespace DataAccess
 
         private static void RegisterForTests(ContainerBuilder builder)
         {
-            builder.RegisterType<ConcurrentDictionary<int, Auction>>();
+            var database = new ConcurrentDictionary<int, Auction>();
+            builder.RegisterInstance(database).As<ConcurrentDictionary<int, Auction>>();
+
             builder
             .RegisterType<InMemoryGenericRepository<int, Auction>>()
-            .As<InMemoryGenericRepository<int, Auction>>();
+            .As<IGenericRepostitory<int, Auction>>();
         }
     }
 }
