@@ -9,6 +9,7 @@ namespace Services.Interfaces
     {
         Task<R> GetById(T id);
         Task<R> SaveAsync(R item);
+        Task<R> UpdateAsync(R item);
         Task<R> DeleteAsync(R item);
         Task<IEnumerable<R>> GetAll();
         Task<IEnumerable<R>> GetSome(Func<R, bool> condition);

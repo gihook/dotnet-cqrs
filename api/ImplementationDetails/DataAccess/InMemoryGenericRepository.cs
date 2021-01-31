@@ -8,16 +8,14 @@ using Models;
 
 namespace DataAccess
 {
-    public class InMemoryGenericRepository<T, R>
-        : IGenericRepostitory<T, R>
-    where R : BaseEntity<T>
-    where T : struct
+    public class InMemoryGenericRepository<R>
+        : IGenericRepostitory<int, R> where R : BaseEntity<int>
     {
-        private readonly ConcurrentDictionary<T, R> _dictionary;
+        private readonly ConcurrentDictionary<int, R> _dictionary;
 
-        private readonly List<Action<ConcurrentDictionary<T, R>>> _changes = new List<Action<ConcurrentDictionary<T, R>>>();
+        private readonly List<Action<ConcurrentDictionary<int, R>>> _changes = new List<Action<ConcurrentDictionary<int, R>>>();
 
-        public InMemoryGenericRepository(ConcurrentDictionary<T, R> dictionary)
+        public InMemoryGenericRepository(ConcurrentDictionary<int, R> dictionary)
         {
             _dictionary = dictionary;
         }
@@ -32,7 +30,7 @@ namespace DataAccess
             return Task.CompletedTask;
         }
 
-        public void Delete(T id)
+        public void Delete(int id)
         {
             _changes.Add(dict => DeleteItem(id, dict));
         }
@@ -44,7 +42,7 @@ namespace DataAccess
             return Task.FromResult(allItems);
         }
 
-        public Task<R> GetById(T id)
+        public Task<R> GetById(int id)
         {
             var result = _dictionary[id];
 
@@ -63,12 +61,25 @@ namespace DataAccess
             _changes.Add(dict => SaveItem(entity, dict));
         }
 
-        private void SaveItem(R item, ConcurrentDictionary<T, R> dictionary)
+        public void Update(R entity)
         {
-            dictionary.TryAdd(item.Id, item);
+            _changes.Add(dict => SaveItem(entity, dict));
         }
 
-        private void DeleteItem(T id, ConcurrentDictionary<T, R> dictionary)
+        private void UpdateItem(R item, ConcurrentDictionary<int, R> dictionary)
+        {
+            dictionary[item.Id] = item;
+        }
+
+        private void SaveItem(R item, ConcurrentDictionary<int, R> dictionary)
+        {
+            var currentIndex = dictionary.Keys.Count();
+            var newId = currentIndex + 1;
+            item.Id = newId;
+            dictionary.TryAdd(currentIndex, item);
+        }
+
+        private void DeleteItem(int id, ConcurrentDictionary<int, R> dictionary)
         {
             dictionary.TryRemove(id, out R item);
         }

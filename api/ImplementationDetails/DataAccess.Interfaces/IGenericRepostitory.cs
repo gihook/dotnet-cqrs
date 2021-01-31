@@ -11,6 +11,7 @@ namespace DataAccess.Interfaces
     {
         Task<R> GetById(T id);
         void Save(R entity);
+        void Update(R entity);
         void Delete(T id);
         Task<IEnumerable<R>> GetAll();
         Task<IEnumerable<R>> GetSome(Func<R, bool> condition);

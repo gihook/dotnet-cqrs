@@ -48,5 +48,13 @@ namespace Services
 
             return item;
         }
+
+        public async Task<R> UpdateAsync(R item)
+        {
+            _repository.Update(item);
+            await _repository.Apply();
+
+            return item;
+        }
     }
 }

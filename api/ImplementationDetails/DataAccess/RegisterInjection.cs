@@ -20,7 +20,7 @@ namespace DataAccess
             builder.RegisterInstance(database).As<ConcurrentDictionary<int, Auction>>();
 
             builder
-            .RegisterType<InMemoryGenericRepository<int, Auction>>()
+            .RegisterType<InMemoryGenericRepository<Auction>>()
             .As<IGenericRepostitory<int, Auction>>();
         }
     }
