@@ -13,22 +13,37 @@ namespace AuctionModule.Queries
 
         private readonly IGenericService<int, Auction> _auctionService;
 
-        public int Id { get; set; }
+        public int? Id { get; set; }
 
         public ReadAuction(IGenericService<int, Auction> auctionService)
         {
             _auctionService = auctionService;
         }
 
-        public override async Task<IEnumerable<ValidationError>> Validate(Executor executor)
+        public override Task<IEnumerable<ValidationError>> Validate(Executor executor)
         {
-            await Task.CompletedTask;
-            return Enumerable.Empty<ValidationError>();
+            // NOTE: dummy implementation
+            var errors = new List<ValidationError>();
+            if (Id == null)
+            {
+                errors.Add(
+                    new ValidationError()
+                    {
+                        Value = Id,
+                        ErrorCode = "MandatoryField",
+                        FieldName = "Id"
+                    });
+            }
+
+
+            var result = errors.AsEnumerable();
+
+            return Task.FromResult(result);
         }
 
         protected override async Task<Auction> ExecuteInternal(Executor executor)
         {
-            var result = await _auctionService.GetById(Id);
+            var result = await _auctionService.GetById((int)Id);
 
             return result;
         }

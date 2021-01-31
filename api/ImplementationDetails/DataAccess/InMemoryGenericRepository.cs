@@ -73,9 +73,9 @@ namespace DataAccess
 
         private void SaveItem(R item, ConcurrentDictionary<int, R> dictionary)
         {
+            // NOTE: naive implementation; probably good enough
             var currentIndex = dictionary.Keys.Count();
-            var newId = currentIndex + 1;
-            item.Id = newId;
+            item.Id = currentIndex;
             dictionary.TryAdd(currentIndex, item);
         }
 

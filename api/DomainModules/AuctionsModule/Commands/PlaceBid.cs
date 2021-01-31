@@ -8,15 +8,14 @@ using Services.Interfaces;
 
 namespace AuctionModule.Commands
 {
-    public class CreateAuction : Command<Auction>
+    public class PlaceBid : Command<Auction>
     {
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public int InitialPrice { get; set; }
+        public int Id { get; set; }
+        public int PriceValue { get; set; }
 
         private readonly IGenericService<int, Auction> _auctionService;
 
-        public CreateAuction(IGenericService<int, Auction> auctionService)
+        public PlaceBid(IGenericService<int, Auction> auctionService)
         {
             _auctionService = auctionService;
         }
@@ -29,13 +28,8 @@ namespace AuctionModule.Commands
 
         protected override async Task<Auction> ExecuteInternal(Executor executor)
         {
-            var auction = new Auction
-            {
-                Name = Name,
-                Description = Description,
-                CurrentPrice = InitialPrice
-            };
-
+            var auction = await _auctionService.GetById(Id);
+            auction.CurrentPrice = PriceValue;
             var result = await _auctionService.SaveAsync(auction);
 
             return result;
