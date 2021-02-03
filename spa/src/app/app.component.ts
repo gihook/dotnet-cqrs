@@ -1,12 +1,8 @@
 import { Component } from '@angular/core';
-import { HttpActionExecutorService } from '../action-services/http-action-executor.service';
-import {
-  AllAuctions,
-  CreateAuction,
-  PlaceBid,
-} from '../actions/auction-module';
+import { HttpActionExecutorService } from './action-services/http-action-executor.service';
+import { AllAuctions, CreateAuction, PlaceBid } from './actions/auction-module';
 import { Observable } from 'rxjs';
-import { ActionDocumentationService } from '../action-services/action-documentation.service';
+import { ActionDocumentationService } from './action-services/action-documentation.service';
 
 @Component({
   selector: 'app-root',
