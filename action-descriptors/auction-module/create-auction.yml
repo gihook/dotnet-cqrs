@@ -1,0 +1,25 @@
+name: CreateAuction
+description: >
+  Creates auction and sets initial price
+formDisplayName: Create Auction
+type: command
+parameters:
+  - propertyName: Name
+    type: string
+    validators:
+      - type: minLength
+        value: 3
+    componentName: TextField
+  - propertyName: Description
+    type: string
+    validators:
+      - type: minLength
+        value: 5
+    componentName: TextBox
+  - propertyName: InitialPrice
+    type: number
+    displayName: Initial Price
+    validators:
+      - type: minValue
+        value: 0
+    componentName: NumberField

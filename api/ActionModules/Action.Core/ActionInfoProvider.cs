@@ -57,7 +57,7 @@ namespace Action.Core
 
             return new ActionParameter
             {
-                Name = name,
+                ParameterName = name,
                 Type = type,
                 Generics = genericArguments
             };

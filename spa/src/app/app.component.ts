@@ -63,10 +63,13 @@ export class AppComponent {
   }
 
   // TOOD: naive implementation correct it
-  executeAction(action: { type: string; name: string }, formData: FormGroup) {
+  executeAction(
+    action: { actionType: string; name: string },
+    formData: FormGroup
+  ) {
     console.log({ action, formData });
 
-    const actionType: string = action.type.toLowerCase();
+    const actionType: string = action.actionType.toLowerCase();
     if (actionType.includes('query'))
       this.actionExecutor
         .executeQueryByName(action.name, formData.value)
