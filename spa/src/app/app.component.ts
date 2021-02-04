@@ -3,6 +3,10 @@ import { HttpActionExecutorService } from './action-services/http-action-executo
 import { AllAuctions, CreateAuction, PlaceBid } from './actions/auction-module';
 import { Observable } from 'rxjs';
 import { ActionDocumentationService } from './action-services/action-documentation.service';
+import { ControlsProviderService } from './services/controls-provider.service';
+import { map } from 'rxjs/operators';
+import { FormGroup } from '@angular/forms';
+import { ControlsMapperService } from './services/controls-mapper.service';
 
 @Component({
   selector: 'app-root',
@@ -13,14 +17,29 @@ export class AppComponent {
   queryResult$: Observable<void>;
   commandResult$: Observable<{}>;
   allActions$: Observable<{}>;
+  formGroups: { [key: string]: FormGroup } = {};
 
   constructor(
     private actionExecutor: HttpActionExecutorService,
-    private actionDocumentationService: ActionDocumentationService
+    private actionDocumentationService: ActionDocumentationService,
+    private controlsProviderService: ControlsProviderService,
+    private controlsMapperService: ControlsMapperService
   ) {}
 
   ngOnInit() {
-    this.allActions$ = this.actionDocumentationService.getAllActions();
+    this.allActions$ = this.actionDocumentationService.getAllActions().pipe(
+      map((actions) => {
+        return actions.map((a) => {
+          const title = a.name;
+          const controls = this.controlsProviderService.getControls(a);
+          this.formGroups[
+            title
+          ] = this.controlsMapperService.mapControlsToFormGroup(controls);
+
+          return { title, controls, actionData: a };
+        });
+      })
+    );
   }
 
   callPlaceBid() {
@@ -44,23 +63,18 @@ export class AppComponent {
   }
 
   // TOOD: naive implementation correct it
-  executeAction(action, $event: MouseEvent) {
-    $event.preventDefault();
-
-    const buttonElement = $event.srcElement as any;
-    const formElement = buttonElement.parentElement;
-    const formData: any = new FormData(formElement as any);
-    const entries = Array.from(formData.entries());
-    const params = entries.reduce((acc, [name, value]) => {
-      acc[name] = value;
-      return acc;
-    }, {});
+  executeAction(action: { type: string; name: string }, formData: FormGroup) {
+    console.log({ action, formData });
 
     const actionType: string = action.type.toLowerCase();
     if (actionType.includes('query'))
-      this.actionExecutor.executeQueryByName(action.name, params).toPromise();
+      this.actionExecutor
+        .executeQueryByName(action.name, formData.value)
+        .toPromise();
 
     if (actionType.includes('command'))
-      this.actionExecutor.executeCommandByName(action.name, params).toPromise();
+      this.actionExecutor
+        .executeCommandByName(action.name, formData.value)
+        .toPromise();
   }
 }

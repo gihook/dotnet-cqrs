@@ -1,0 +1,6 @@
+<div class="text-field-container" [formGroup]="formGroup">
+  <label [style.color]="hasErrors ? 'red' : ''">{{
+    control?.input?.label
+  }}</label>
+  <input [formControlName]="control.controlName" type="text" />
+</div>

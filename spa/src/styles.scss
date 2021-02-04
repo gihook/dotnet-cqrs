@@ -1,1 +1,21 @@
 /* You can add global styles to this file, and also import other style files */
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.text-field-container {
+  padding: 5px;
+  border: 1px solid gray;
+  width: 100%;
+
+  input, select {
+      width: 100%;
+  }
+
+  label {
+      font-weight: bold;
+  }
+}

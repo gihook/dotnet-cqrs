@@ -1,0 +1,10 @@
+<div class="text-field-container" [formGroup]="formGroup">
+  <label [style.color]="hasErrors ? 'red' : ''">{{
+    control?.input?.label
+  }}</label>
+  <select [formControlName]="control.controlName">
+    <option *ngFor="let option of control.input.options" [value]="option.value">
+      {{ option.name }}
+    </option>
+  </select>
+</div>
