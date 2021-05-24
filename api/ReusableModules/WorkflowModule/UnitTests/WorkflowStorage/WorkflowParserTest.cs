@@ -66,7 +66,7 @@ events:
             var workflowParser = new WorkflowParser();
             var workflowDescriptor = workflowParser.GetWorkflowDescriptor(yamlContent);
 
-            Assert.Equal(1, workflowDescriptor.EventDescriptors.Count());
+            Assert.Single(workflowDescriptor.EventDescriptors);
 
             var firstEventDescriptor = workflowDescriptor.EventDescriptors.First();
 
@@ -75,7 +75,7 @@ events:
             Assert.Equal("string", firstEventDescriptor.Inputs["description?"]);
             Assert.Equal("MeetingTypeId", firstEventDescriptor.Inputs["meetingTypeId"]);
             Assert.Equal("AgendaItemType", firstEventDescriptor.Inputs["agendaItemType"]);
-            Assert.Equal(1, firstEventDescriptor.ValidatorDescriptors.Count());
+            Assert.Single(firstEventDescriptor.ValidatorDescriptors);
 
             var firstValidator = firstEventDescriptor.ValidatorDescriptors.First();
 
@@ -85,7 +85,7 @@ events:
             Assert.Contains("5", firstValidator.Params);
 
             Assert.Equal("PasteInputs", firstEventDescriptor.ReducerDescriptor.Type);
-            Assert.Collection(firstEventDescriptor.ReducerDescriptor.Params);
+            Assert.Empty(firstEventDescriptor.ReducerDescriptor.Params);
         }
 
         [Fact]
