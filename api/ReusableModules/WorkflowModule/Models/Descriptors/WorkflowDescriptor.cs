@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace WorkflowModule.Descriptors
 {
     public class WorkflowDescriptor
@@ -6,5 +8,8 @@ namespace WorkflowModule.Descriptors
         public string Name { get; set; }
         public string Description { get; set; }
         public int Version { get; set; }
+        public IEnumerable<string> States { get; set; }
+        public IEnumerable<EventDescriptor> EventDescriptors { get; set; }
+        /* public IEnumerable<EventTransitionDescriptor> EventTransitions { get; set; } */
     }
 }
