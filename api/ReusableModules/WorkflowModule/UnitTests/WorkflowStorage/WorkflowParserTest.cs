@@ -59,8 +59,7 @@ events:
     validators:
       - type: IsGreaterThan
         params: [EVENT_INPUTS.title, 5]
-    reducer: 
-      type: PasteInputs
+    reducer: PasteInputs
 ";
 
             var workflowParser = new WorkflowParser();
@@ -88,24 +87,44 @@ events:
             Assert.Empty(firstEventDescriptor.ReducerDescriptor.Params);
         }
 
-        [Fact]
-        public void Should_Parse_EventDescriptors_Reducer_With_Params()
-        {
-            var yamlContent = @"
-events:
-  - name: SubmissionCreated
-    reducer: 
-      type: SampleNamespace.SampleReducer
-      params: [EVENT_INPUTS.test, 42, ""Test""]
-";
-            var workflowParser = new WorkflowParser();
-            var workflowDescriptor = workflowParser.GetWorkflowDescriptor(yamlContent);
-            var firstEventDescriptor = workflowDescriptor.EventDescriptors.First();
+        /* [Fact] */
+        /* public void Should_Parse_EventDescriptors_Reducer_With_Params() */
+        /* { */
+        /*     var yamlContent = @" */
+        /* events: */
+        /* - name: SubmissionCreated */
+        /* reducer: */
+        /* type: SampleNamespace.SampleReducer */
+        /* params: [EVENT_INPUTS.test, 42, ""Test""] */
+        /* "; */
+        /*     var workflowParser = new WorkflowParser(); */
+        /*     var workflowDescriptor = workflowParser.GetWorkflowDescriptor(yamlContent); */
+        /*     var firstEventDescriptor = workflowDescriptor.EventDescriptors.First(); */
 
-            Assert.Equal("SampleNamespace.SampleReducer", firstEventDescriptor.ReducerDescriptor.Type);
-            Assert.Contains("EVENT_INPUTS.test", firstEventDescriptor.ReducerDescriptor.Params);
-            Assert.Contains("42", firstEventDescriptor.ReducerDescriptor.Params);
-            Assert.Contains("Test", firstEventDescriptor.ReducerDescriptor.Params);
-        }
+        /*     Assert.Equal("SampleNamespace.SampleReducer", firstEventDescriptor.ReducerDescriptor.Type); */
+        /*     Assert.Contains("EVENT_INPUTS.test", firstEventDescriptor.ReducerDescriptor.Params); */
+        /*     Assert.Contains("42", firstEventDescriptor.ReducerDescriptor.Params); */
+        /*     Assert.Contains("Test", firstEventDescriptor.ReducerDescriptor.Params); */
+        /* } */
+
+        /* public void Should_Parse_EventTransitionDescriptors() */
+        /* { */
+        /*     var yamlContent = @" */
+        /* eventTransitions: */
+        /* - event: SummarySaved */
+        /* fromState: Draft */
+        /* conditionalTransition: */
+        /* - condition: IsDefined # same functions as in validators */
+        /* params: [CALCULATED_STATE_DATA.summary.general.fdoa] */
+        /* toState: ManagerReview */
+        /* # conditionalTransition will set first matched state, if none mathe this one will */
+        /* - condition: TRUE */
+        /* toState: Draft */
+        /* "; */
+        /*     var workflowParser = new WorkflowParser(); */
+        /*     var workflowDescriptor = workflowParser.GetWorkflowDescriptor(yamlContent); */
+
+        /*     /1* Assert.Single(workflowDescriptor.EventTransitionDescriptors); *1/ */
+        /* } */
     }
 }
