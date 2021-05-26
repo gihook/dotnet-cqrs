@@ -134,41 +134,43 @@ namespace WorkflowModule.WorkflowStorage
         {
             var result = ParseObjectList<Dictionary<object, object>>(dictionary, "eventTransitions");
 
-            return result.Select(item =>
+            return result.Select(ParseEventTransitionItem);
+        }
+
+        private EventTransitionDescriptor ParseEventTransitionItem(Dictionary<object, object> item)
+        {
+            var descriptor = new EventTransitionDescriptor();
+            descriptor.Event = ReadStringKey(item, "event");
+            descriptor.FromState = ReadStringKey(item, "fromState");
+            descriptor.ConditionalTransitions = GetConditionalTransitions(item);
+
+            return descriptor;
+        }
+
+        private IEnumerable<ConditionalTransition> GetConditionalTransitions(Dictionary<object, object> item)
+        {
+            var entries = ParseObjectList<Dictionary<object, object>>(item, "conditionalTransition");
+            var transitions = entries.Select(entry =>
             {
-                var descriptor = new EventTransitionDescriptor();
-                descriptor.Event = ReadStringKey(item, "event");
-                descriptor.FromState = ReadStringKey(item, "fromState");
+                var transition = new ConditionalTransition();
+                transition.Condition = ReadStringKey(entry, "condition");
+                transition.Params = ParseObjectList<string>(entry, "params");
+                transition.ToState = ReadStringKey(entry, "toState");
 
-                var hasConditionalTransitionSection = item.ContainsKey("conditionalTransition");
-                if (hasConditionalTransitionSection)
-                {
-                    var entries = ParseObjectList<Dictionary<object, object>>(item, "conditionalTransition");
-                    descriptor.ConditionalTransitions = entries.Select(entry =>
-                    {
-                        var transition = new ConditionalTransition();
-                        transition.Condition = ReadStringKey(entry, "condition");
-                        transition.Params = ParseObjectList<string>(entry, "params");
-                        transition.ToState = ReadStringKey(entry, "toState");
-
-                        return transition;
-                    });
-                }
-                else
-                {
-                    descriptor.ConditionalTransitions = new List<ConditionalTransition>()
-                    {
-                        new ConditionalTransition()
-                        {
-                            Condition = "TRUE",
-                            Params = Enumerable.Empty<string>(),
-                            ToState = ReadStringKey(item, "toState")
-                        }
-                    };
-                }
-
-                return descriptor;
+                return transition;
             });
+
+            var hasConditionalTransitions = transitions.Count() != 0;
+            if (hasConditionalTransitions) return transitions;
+
+            var nonConditionalTransition = new ConditionalTransition()
+            {
+                Condition = "TRUE",
+                Params = Enumerable.Empty<string>(),
+                ToState = ReadStringKey(item, "toState")
+            };
+
+            return transitions.Append(nonConditionalTransition);
         }
     }
 }
