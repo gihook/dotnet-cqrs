@@ -38,6 +38,13 @@ namespace WorkflowModule.WorkflowStorage
             return dictionary.ContainsKey(key) ? (dictionary[key] as string) : String.Empty;
         }
 
+        private Dictionary<object, object> ReadKey(Dictionary<object, object> dictionary, string key)
+        {
+            return dictionary.ContainsKey(key)
+                ? dictionary[key] as Dictionary<object, object>
+                : new Dictionary<object, object>();
+        }
+
         private int ReadIntKey(Dictionary<object, object> dictionary, string key)
         {
             return dictionary.ContainsKey(key)
@@ -61,7 +68,7 @@ namespace WorkflowModule.WorkflowStorage
                 var eventDescriptor = new EventDescriptor();
                 eventDescriptor.Name = ReadStringKey(item, "name");
 
-                var inputsDict = item["inputs"] as Dictionary<object, object>;
+                var inputsDict = ReadKey(item, "inputs");
                 eventDescriptor.Inputs = ParseInputParameters(inputsDict);
 
                 eventDescriptor.ValidatorDescriptors = ParseInputValidators(item);
@@ -102,7 +109,22 @@ namespace WorkflowModule.WorkflowStorage
         private ReducerDescriptor ParseReducer(Dictionary<object, object> dictionary)
         {
             var result = new ReducerDescriptor();
-            result.Type = ReadStringKey(dictionary, "reducer");
+            var obj = dictionary["reducer"];
+
+            var dict = obj as Dictionary<object, object>;
+
+            var isString = dict == null;
+
+            var type = isString
+                           ? obj as string
+                           : dict["type"] as string;
+
+            result.Type = type;
+
+            if (!isString)
+            {
+                result.Params = ParseObjectList<string>(dict, "params");
+            }
 
             return result;
         }

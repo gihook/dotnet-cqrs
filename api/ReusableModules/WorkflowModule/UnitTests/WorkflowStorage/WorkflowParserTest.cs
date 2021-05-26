@@ -87,25 +87,26 @@ events:
             Assert.Empty(firstEventDescriptor.ReducerDescriptor.Params);
         }
 
-        /* [Fact] */
-        /* public void Should_Parse_EventDescriptors_Reducer_With_Params() */
-        /* { */
-        /*     var yamlContent = @" */
-        /* events: */
-        /* - name: SubmissionCreated */
-        /* reducer: */
-        /* type: SampleNamespace.SampleReducer */
-        /* params: [EVENT_INPUTS.test, 42, ""Test""] */
-        /* "; */
-        /*     var workflowParser = new WorkflowParser(); */
-        /*     var workflowDescriptor = workflowParser.GetWorkflowDescriptor(yamlContent); */
-        /*     var firstEventDescriptor = workflowDescriptor.EventDescriptors.First(); */
+        [Fact]
+        public void Should_Parse_EventDescriptors_Reducer_With_Params()
+        {
+            var yamlContent = @"
+events:
+  - name: SubmissionCreated
+    reducer:
+      type: SampleNamespace.SampleReducer
+      params: [EVENT_INPUTS.test, 42, ""Test""]
+";
+            var workflowParser = new WorkflowParser();
+            var workflowDescriptor = workflowParser.GetWorkflowDescriptor(yamlContent);
+            var firstEventDescriptor = workflowDescriptor.EventDescriptors.First();
 
-        /*     Assert.Equal("SampleNamespace.SampleReducer", firstEventDescriptor.ReducerDescriptor.Type); */
-        /*     Assert.Contains("EVENT_INPUTS.test", firstEventDescriptor.ReducerDescriptor.Params); */
-        /*     Assert.Contains("42", firstEventDescriptor.ReducerDescriptor.Params); */
-        /*     Assert.Contains("Test", firstEventDescriptor.ReducerDescriptor.Params); */
-        /* } */
+            Assert.Empty(firstEventDescriptor.ValidatorDescriptors);
+            Assert.Equal("SampleNamespace.SampleReducer", firstEventDescriptor.ReducerDescriptor.Type);
+            Assert.Contains("EVENT_INPUTS.test", firstEventDescriptor.ReducerDescriptor.Params);
+            Assert.Contains("42", firstEventDescriptor.ReducerDescriptor.Params);
+            Assert.Contains("Test", firstEventDescriptor.ReducerDescriptor.Params);
+        }
 
         /* public void Should_Parse_EventTransitionDescriptors() */
         /* { */
