@@ -139,9 +139,12 @@ eventTransitions:
                 {
                     Assert.Equal("IsDefined", transition.Condition);
                     Assert.Contains("CALCULATED_STATE_DATA.summary.general.fdoa", transition.Params);
+                    Assert.Equal("ManagerReview", transition.ToState);
                 }, transition =>
                 {
                     Assert.Equal("TRUE", transition.Condition);
+                    Assert.Empty(transition.Params);
+                    Assert.Equal("Draft", transition.ToState);
                 });
             }, item =>
             {
@@ -154,6 +157,7 @@ eventTransitions:
                     {
                         Assert.Equal("TRUE", transition.Condition);
                         Assert.Empty(transition.Params);
+                        Assert.Equal("FinalState", transition.ToState);
                     });
                 });
             });

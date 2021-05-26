@@ -149,20 +149,21 @@ namespace WorkflowModule.WorkflowStorage
                         var transition = new ConditionalTransition();
                         transition.Condition = ReadStringKey(entry, "condition");
                         transition.Params = ParseObjectList<string>(entry, "params");
+                        transition.ToState = ReadStringKey(entry, "toState");
 
                         return transition;
                     });
                 }
                 else
                 {
-
-                    var transition = new ConditionalTransition();
-                    transition.Condition = "TRUE";
-                    transition.Params = Enumerable.Empty<string>();
-
                     descriptor.ConditionalTransitions = new List<ConditionalTransition>()
                     {
-                        transition
+                        new ConditionalTransition()
+                        {
+                            Condition = "TRUE",
+                            Params = Enumerable.Empty<string>(),
+                            ToState = ReadStringKey(item, "toState")
+                        }
                     };
                 }
 

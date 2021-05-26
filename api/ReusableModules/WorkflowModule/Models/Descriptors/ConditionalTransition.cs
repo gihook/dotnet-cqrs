@@ -6,5 +6,6 @@ namespace WorkflowModule.Descriptors
     {
         public string Condition { get; set; }
         public IEnumerable<string> Params { get; set; }
+        public string ToState { get; set; }
     }
 }
