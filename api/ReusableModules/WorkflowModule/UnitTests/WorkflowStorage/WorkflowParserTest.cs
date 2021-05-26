@@ -108,24 +108,55 @@ events:
             Assert.Contains("Test", firstEventDescriptor.ReducerDescriptor.Params);
         }
 
-        /* public void Should_Parse_EventTransitionDescriptors() */
-        /* { */
-        /*     var yamlContent = @" */
-        /* eventTransitions: */
-        /* - event: SummarySaved */
-        /* fromState: Draft */
-        /* conditionalTransition: */
-        /* - condition: IsDefined # same functions as in validators */
-        /* params: [CALCULATED_STATE_DATA.summary.general.fdoa] */
-        /* toState: ManagerReview */
-        /* # conditionalTransition will set first matched state, if none mathe this one will */
-        /* - condition: TRUE */
-        /* toState: Draft */
-        /* "; */
-        /*     var workflowParser = new WorkflowParser(); */
-        /*     var workflowDescriptor = workflowParser.GetWorkflowDescriptor(yamlContent); */
+        [Fact]
+        public void Should_Parse_EventTransitionDescriptors()
+        {
+            var yamlContent = @"
+eventTransitions:
+  - event: SummarySaved
+    fromState: Draft
+    conditionalTransition:
+      - condition: IsDefined # same functions as in validators
+        params: [CALCULATED_STATE_DATA.summary.general.fdoa]
+        toState: ManagerReview
+      # conditionalTransition will set first matched state, if none mathe this one will
+      - condition: TRUE
+        toState: Draft
+  - event: ItemAdded
+    fromState: ManagerReview
+    toState: FinalState
+";
+            var workflowParser = new WorkflowParser();
+            var workflowDescriptor = workflowParser.GetWorkflowDescriptor(yamlContent);
+            var eventTransitionDescriptors = workflowDescriptor.EventTransitionDescriptors;
 
-        /*     /1* Assert.Single(workflowDescriptor.EventTransitionDescriptors); *1/ */
-        /* } */
+            Assert.Collection(eventTransitionDescriptors, item =>
+            {
+                Assert.Equal("SummarySaved", item.Event);
+                Assert.Equal("Draft", item.FromState);
+
+                Assert.Collection(item.ConditionalTransitions, transition =>
+                {
+                    Assert.Equal("IsDefined", transition.Condition);
+                    Assert.Contains("CALCULATED_STATE_DATA.summary.general.fdoa", transition.Params);
+                }, transition =>
+                {
+                    Assert.Equal("TRUE", transition.Condition);
+                });
+            }, item =>
+            {
+                Assert.Equal("ItemAdded", item.Event);
+                Assert.Equal("ManagerReview", item.FromState);
+
+                Assert.Collection(item.ConditionalTransitions, transition =>
+                {
+                    Assert.Collection(item.ConditionalTransitions, transition =>
+                    {
+                        Assert.Equal("TRUE", transition.Condition);
+                        Assert.Empty(transition.Params);
+                    });
+                });
+            });
+        }
     }
 }

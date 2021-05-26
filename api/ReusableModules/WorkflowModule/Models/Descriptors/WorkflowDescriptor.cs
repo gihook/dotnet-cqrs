@@ -10,6 +10,6 @@ namespace WorkflowModule.Descriptors
         public int Version { get; set; }
         public IEnumerable<string> States { get; set; }
         public IEnumerable<EventDescriptor> EventDescriptors { get; set; }
-        public IEnumerable<EventTransitionDescriptor> EventTransitions { get; set; }
+        public IEnumerable<EventTransitionDescriptor> EventTransitionDescriptors { get; set; }
     }
 }

@@ -29,6 +29,7 @@ namespace WorkflowModule.WorkflowStorage
             workflowDescriptor.States = ParseObjectList<string>(deserializedDescriptor, "states");
 
             workflowDescriptor.EventDescriptors = ParseEventDescriptors(deserializedDescriptor);
+            workflowDescriptor.EventTransitionDescriptors = ParseEventTransitions(deserializedDescriptor);
 
             return workflowDescriptor;
         }
@@ -127,6 +128,46 @@ namespace WorkflowModule.WorkflowStorage
             }
 
             return result;
+        }
+
+        private IEnumerable<EventTransitionDescriptor> ParseEventTransitions(Dictionary<object, object> dictionary)
+        {
+            var result = ParseObjectList<Dictionary<object, object>>(dictionary, "eventTransitions");
+
+            return result.Select(item =>
+            {
+                var descriptor = new EventTransitionDescriptor();
+                descriptor.Event = ReadStringKey(item, "event");
+                descriptor.FromState = ReadStringKey(item, "fromState");
+
+                var hasConditionalTransitionSection = item.ContainsKey("conditionalTransition");
+                if (hasConditionalTransitionSection)
+                {
+                    var entries = ParseObjectList<Dictionary<object, object>>(item, "conditionalTransition");
+                    descriptor.ConditionalTransitions = entries.Select(entry =>
+                    {
+                        var transition = new ConditionalTransition();
+                        transition.Condition = ReadStringKey(entry, "condition");
+                        transition.Params = ParseObjectList<string>(entry, "params");
+
+                        return transition;
+                    });
+                }
+                else
+                {
+
+                    var transition = new ConditionalTransition();
+                    transition.Condition = "TRUE";
+                    transition.Params = Enumerable.Empty<string>();
+
+                    descriptor.ConditionalTransitions = new List<ConditionalTransition>()
+                    {
+                        transition
+                    };
+                }
+
+                return descriptor;
+            });
         }
     }
 }
