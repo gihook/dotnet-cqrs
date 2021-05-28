@@ -8,18 +8,19 @@ namespace WorkflowModule.StateMachine
     public class EventValidationExecutor : IEventValidationExecutor
     {
         private readonly WorkflowDefinitionHelper _workflowDefinitionHelper;
+        private readonly IValidatorTranslator _validatiorTranslator;
 
-        public EventValidationExecutor(WorkflowDefinitionHelper workflowDefinitionHelper)
+        public EventValidationExecutor(WorkflowDefinitionHelper workflowDefinitionHelper, IValidatorTranslator validatorTranslator)
         {
             _workflowDefinitionHelper = workflowDefinitionHelper;
+            _validatiorTranslator = validatorTranslator;
         }
 
         public IEnumerable<ValidationError> ValidateEvent(StateInfo currentState, EventPayload payload, string workflowId)
         {
             var errors = new List<ValidationError>();
 
-            var isInConflict = currentState.CurrentOrderNumber + 1 != payload.OrderNumber;
-            if (isInConflict) errors.Add(ValidationError.OrderNumberConfilict());
+            if (EventIsOutOfOrder(currentState, payload)) errors.Add(ValidationError.OrderNumberConfilict());
 
             var eventIsAllowed = _workflowDefinitionHelper
                                      .EventIsAllowed(payload.EventName, currentState, workflowId);
@@ -37,7 +38,29 @@ namespace WorkflowModule.StateMachine
             var typeParameterErrors = TypeParameterErrors(eventDescriptor.Inputs, payload.Data);
             errors.AddRange(typeParameterErrors);
 
+            var validationFunctionErrors = GetValidationFunctionErrors(eventDescriptor.ValidatorDescriptors);
+            errors.AddRange(validationFunctionErrors);
+
             return errors;
+        }
+
+        private bool EventIsOutOfOrder(StateInfo currentState, EventPayload payload)
+        {
+            return currentState.CurrentOrderNumber + 1 != payload.OrderNumber;
+        }
+
+        private IEnumerable<ValidationError> GetValidationFunctionErrors(IEnumerable<Descriptors.InputValidatorDescriptor> inputDescriptors)
+        {
+            return inputDescriptors.Where(id =>
+            {
+                var validator = _validatiorTranslator.GetValidator(id);
+                var isValid = validator.Invoke(id.Params);
+
+                return !isValid;
+            }).Select(id =>
+            {
+                return ValidationError.ValidatiorFunctionError();
+            });
         }
 
         private IEnumerable<ValidationError> TypeParameterErrors(Dictionary<string, string> inputs, Dictionary<string, object> data)
@@ -56,7 +79,7 @@ namespace WorkflowModule.StateMachine
 
         private bool CanParse(string type, object parameterValue)
         {
-            return type != "int";
+            return _validatiorTranslator.CanParse(type, parameterValue);
         }
 
         private IEnumerable<ValidationError> RequiredErrors(Dictionary<string, string> inputParameters, Dictionary<string, object> inputValues)

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Moq;
 using WorkflowModule.Descriptors;
+using WorkflowModule.Interfaces;
 using WorkflowModule.Models;
 using WorkflowModule.StateMachine;
 using Xunit;
@@ -12,8 +13,7 @@ namespace UnitTests.WorkflowModule.StateMachine
         [Fact]
         public void Return_Error_When_Order_Number_Is_Wrong()
         {
-            var workflowDefinitionHelper = GetWorkflowDefinitionHelper(true);
-            var validationExecutor = new EventValidationExecutor(workflowDefinitionHelper);
+            var validationExecutor = GetInstance(true, null);
 
             var payload = new EventPayload()
             {
@@ -52,9 +52,7 @@ namespace UnitTests.WorkflowModule.StateMachine
                 State = "SecondState"
             };
 
-            var workflowDefinitionHelper = GetWorkflowDefinitionHelper(false);
-
-            var validationExecutor = new EventValidationExecutor(workflowDefinitionHelper);
+            var validationExecutor = GetInstance(false, null);
 
             var validationErrors = validationExecutor.ValidateEvent(stateInfo, payload, workflowId);
 
@@ -87,9 +85,8 @@ namespace UnitTests.WorkflowModule.StateMachine
                 ["first"] = "string",
                 ["second?"] = "int"
             };
-            var workflowDefinitionHelper = GetWorkflowDefinitionHelper(false, inputs);
 
-            var validationExecutor = new EventValidationExecutor(workflowDefinitionHelper);
+            var validationExecutor = GetInstance(false, inputs);
 
             var validationErrors = validationExecutor.ValidateEvent(stateInfo, payload, workflowId);
 
@@ -119,9 +116,8 @@ namespace UnitTests.WorkflowModule.StateMachine
             {
                 ["first"] = "int",
             };
-            var workflowDefinitionHelper = GetWorkflowDefinitionHelper(true, inputs);
 
-            var validationExecutor = new EventValidationExecutor(workflowDefinitionHelper);
+            var validationExecutor = GetInstance(true, inputs);
 
             var validationErrors = validationExecutor.ValidateEvent(new StateInfo(), payload, "");
 
@@ -130,6 +126,49 @@ namespace UnitTests.WorkflowModule.StateMachine
                 Assert.Equal("InvalidInputType", error.Id);
                 Assert.Equal("first", error.ParameterName);
             });
+        }
+
+        [Fact]
+        public void Return_Validator_Function_Error()
+        {
+            var payload = new EventPayload()
+            {
+                OrderNumber = 1,
+                Data = new Dictionary<string, object>()
+            };
+
+            var mock = new Mock<IValidatorTranslator>();
+            mock.Setup(x => x.CanParse(It.IsAny<string>(), It.IsAny<object>())).Returns(true);
+            mock.Setup(x => x.GetValidator(It.IsAny<InputValidatorDescriptor>())).Returns(x => false);
+
+            var validationExecutor = GetInstance(true, null, mock.Object);
+            var validationErrors = validationExecutor.ValidateEvent(new StateInfo(), payload, "");
+
+            Assert.Collection(validationErrors, error =>
+            {
+                Assert.Equal("ValidatiorFunctionError", error.Id);
+            });
+        }
+
+        private EventValidationExecutor GetInstance(
+            bool isEventAllowed,
+            Dictionary<string, string> inputs,
+            IValidatorTranslator validatorTranslatorInstance = null)
+        {
+            var workflowDefinitionHelper = GetWorkflowDefinitionHelper(isEventAllowed, inputs);
+            var validatorTranslator = validatorTranslatorInstance ?? GetValidatorTranslator();
+            var validationExecutor = new EventValidationExecutor(workflowDefinitionHelper, validatorTranslator);
+
+            return validationExecutor;
+        }
+
+        private IValidatorTranslator GetValidatorTranslator()
+        {
+            var mock = new Mock<IValidatorTranslator>();
+            mock.Setup(x => x.CanParse("int", It.IsAny<object>())).Returns(false);
+            mock.Setup(x => x.GetValidator(It.IsAny<InputValidatorDescriptor>())).Returns(x => true);
+
+            return mock.Object;
         }
 
         private WorkflowDefinitionHelper GetWorkflowDefinitionHelper(bool returnValue, Dictionary<string, string> inputs = null)
@@ -141,6 +180,7 @@ namespace UnitTests.WorkflowModule.StateMachine
 
 
             var eventDescriptor = new EventDescriptor();
+            eventDescriptor.ValidatorDescriptors = new InputValidatorDescriptor[] { new InputValidatorDescriptor() };
             eventDescriptor.Inputs = inputs == null
                                          ? new Dictionary<string, string>()
                                          : inputs;

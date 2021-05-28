@@ -38,5 +38,13 @@ namespace WorkflowModule.Models
 
             return instance;
         }
+
+        public static ValidationError ValidatiorFunctionError()
+        {
+            var instance = new ValidationError();
+            instance.Id = "ValidatiorFunctionError";
+
+            return instance;
+        }
     }
 }
