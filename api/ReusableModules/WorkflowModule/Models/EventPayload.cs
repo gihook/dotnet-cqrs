@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace WorkflowModule.Models
 {
@@ -7,7 +8,7 @@ namespace WorkflowModule.Models
         public int OrderNumber { get; set; }
         public Guid AggregateId { get; set; }
         public string EventName { get; set; }
-        public object Data { get; set; }
+        public Dictionary<string, object> Data { get; set; }
         public EventExecutor eventExecutor { get; set; }
         public DateTime Timestamp { get; set; }
     }
