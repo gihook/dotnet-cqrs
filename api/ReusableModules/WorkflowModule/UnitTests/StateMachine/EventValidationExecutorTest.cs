@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Moq;
+using Newtonsoft.Json.Linq;
 using WorkflowModule.Descriptors;
 using WorkflowModule.Interfaces;
 using WorkflowModule.Models;
@@ -70,7 +71,7 @@ namespace UnitTests.WorkflowModule.StateMachine
             {
                 OrderNumber = 2,
                 EventName = "MovedToSecondState",
-                Data = new Dictionary<string, object>()
+                Data = new JObject()
             };
 
             var workflowId = "SampleWorkflow";
@@ -107,10 +108,7 @@ namespace UnitTests.WorkflowModule.StateMachine
             {
                 OrderNumber = 1,
                 EventName = "ItemCreated",
-                Data = new Dictionary<string, object>()
-                {
-                    ["first"] = "this string is not an integer"
-                }
+                Data = new JObject() { ["first"] = "this is not an integer" }
             };
 
             var inputs = new Dictionary<string, string>()
@@ -135,7 +133,7 @@ namespace UnitTests.WorkflowModule.StateMachine
             var payload = new EventPayload()
             {
                 OrderNumber = 1,
-                Data = new Dictionary<string, object>()
+                Data = new JObject()
             };
 
             var mock = new Mock<IValidatorTranslator>();
@@ -158,10 +156,7 @@ namespace UnitTests.WorkflowModule.StateMachine
             var payload = new EventPayload()
             {
                 OrderNumber = 1,
-                Data = new Dictionary<string, object>()
-                {
-                    ["EVENT_INPUTS.test"] = 4
-                }
+                Data = new JObject()
             };
 
             var mockValidatorFunction = new Mock<Func<object[], bool>>();
@@ -185,8 +180,8 @@ namespace UnitTests.WorkflowModule.StateMachine
             var workflowDefinitionHelper = GetWorkflowDefinitionHelper(isEventAllowed, inputs);
             var validatorTranslator = validatorTranslatorInstance ?? GetValidatorTranslator();
             var parameterTranslatorMock = new Mock<IParameterTranslator>();
-            parameterTranslatorMock.Setup(x => x.GetParameterValue("EVENT_INPUTS.test")).Returns(4);
-            parameterTranslatorMock.Setup(x => x.GetParameterValue("5")).Returns(5);
+            parameterTranslatorMock.Setup(x => x.GetEventInputParameterValue("EVENT_INPUTS.test", It.IsAny<JObject>())).Returns(4);
+            parameterTranslatorMock.Setup(x => x.GetEventInputParameterValue("5", It.IsAny<JObject>())).Returns(5);
 
             var validationExecutor = new EventValidationExecutor(workflowDefinitionHelper, validatorTranslator, parameterTranslatorMock.Object);
 

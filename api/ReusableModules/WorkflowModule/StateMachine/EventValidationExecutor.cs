@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json.Linq;
 using WorkflowModule.Interfaces;
 using WorkflowModule.Models;
 
@@ -68,17 +69,18 @@ namespace WorkflowModule.StateMachine
 
         private object[] ParseValidatorParameters(IEnumerable<string> descriptiveParameters)
         {
-            return descriptiveParameters.Select(dp => _parameterTranslator.GetParameterValue(dp)).ToArray();
+            return descriptiveParameters.Select(dp => _parameterTranslator.GetEventInputParameterValue(dp, new JObject())).ToArray();
         }
 
-        private IEnumerable<ValidationError> TypeParameterErrors(Dictionary<string, string> inputs, Dictionary<string, object> data)
+        private IEnumerable<ValidationError> TypeParameterErrors(Dictionary<string, string> inputs, JObject data)
         {
             foreach (var kvp in inputs)
             {
                 var paramName = kvp.Key.Replace("?", "");
                 var type = kvp.Value;
 
-                if (!data.ContainsKey(paramName)) continue;
+                if (data[paramName] == null) continue;
+
                 if (CanParse(type, data[paramName])) continue;
 
                 yield return ValidationError.TypeParameterError(paramName);
@@ -90,14 +92,14 @@ namespace WorkflowModule.StateMachine
             return _validatiorTranslator.CanParse(type, parameterValue);
         }
 
-        private IEnumerable<ValidationError> RequiredErrors(Dictionary<string, string> inputParameters, Dictionary<string, object> inputValues)
+        private IEnumerable<ValidationError> RequiredErrors(Dictionary<string, string> inputParameters, JObject inputValues)
         {
             var requiredInputs = inputParameters.Keys
                                      .Where(propertyName => !propertyName.Contains('?'));
 
             var errors = requiredInputs.Where(propertyName =>
             {
-                return !inputValues.ContainsKey(propertyName);
+                return inputValues[propertyName] == null;
             }).Select(ValidationError.RequiredInputParameter);
 
             return errors;
