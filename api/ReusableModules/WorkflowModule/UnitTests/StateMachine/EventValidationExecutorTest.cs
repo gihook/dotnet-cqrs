@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Moq;
 using WorkflowModule.Descriptors;
@@ -147,7 +148,33 @@ namespace UnitTests.WorkflowModule.StateMachine
             Assert.Collection(validationErrors, error =>
             {
                 Assert.Equal("ValidatiorFunctionError", error.Id);
+                Assert.Equal("IsGreaterThen", error.ParameterName);
             });
+        }
+
+        [Fact]
+        public void Validator_Function_Is_Called_With_Parsed_Parameters()
+        {
+            var payload = new EventPayload()
+            {
+                OrderNumber = 1,
+                Data = new Dictionary<string, object>()
+                {
+                    ["EVENT_INPUTS.test"] = 4
+                }
+            };
+
+            var mockValidatorFunction = new Mock<Func<object[], bool>>();
+            mockValidatorFunction.Setup(f => f(It.IsAny<object[]>())).Returns(true);
+
+            var mock = new Mock<IValidatorTranslator>();
+            mock.Setup(x => x.CanParse(It.IsAny<string>(), It.IsAny<object>())).Returns(true);
+            mock.Setup(x => x.GetValidator(It.IsAny<InputValidatorDescriptor>())).Returns(mockValidatorFunction.Object);
+
+            var validationExecutor = GetInstance(true, null, mock.Object);
+            var validationErrors = validationExecutor.ValidateEvent(new StateInfo(), payload, "");
+
+            mockValidatorFunction.Verify(f => f(new object[] { 4, 5 }), Times.Once);
         }
 
         private EventValidationExecutor GetInstance(
@@ -157,7 +184,11 @@ namespace UnitTests.WorkflowModule.StateMachine
         {
             var workflowDefinitionHelper = GetWorkflowDefinitionHelper(isEventAllowed, inputs);
             var validatorTranslator = validatorTranslatorInstance ?? GetValidatorTranslator();
-            var validationExecutor = new EventValidationExecutor(workflowDefinitionHelper, validatorTranslator);
+            var parameterTranslatorMock = new Mock<IParameterTranslator>();
+            parameterTranslatorMock.Setup(x => x.GetParameterValue("EVENT_INPUTS.test")).Returns(4);
+            parameterTranslatorMock.Setup(x => x.GetParameterValue("5")).Returns(5);
+
+            var validationExecutor = new EventValidationExecutor(workflowDefinitionHelper, validatorTranslator, parameterTranslatorMock.Object);
 
             return validationExecutor;
         }
@@ -180,7 +211,14 @@ namespace UnitTests.WorkflowModule.StateMachine
 
 
             var eventDescriptor = new EventDescriptor();
-            eventDescriptor.ValidatorDescriptors = new InputValidatorDescriptor[] { new InputValidatorDescriptor() };
+            eventDescriptor.ValidatorDescriptors = new InputValidatorDescriptor[]
+            {
+                new InputValidatorDescriptor()
+                {
+                    Type = "IsGreaterThen",
+                    Params = new string[] { "EVENT_INPUTS.test", "5"}
+                }
+            };
             eventDescriptor.Inputs = inputs == null
                                          ? new Dictionary<string, string>()
                                          : inputs;

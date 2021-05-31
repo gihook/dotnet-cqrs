@@ -9,11 +9,13 @@ namespace WorkflowModule.StateMachine
     {
         private readonly WorkflowDefinitionHelper _workflowDefinitionHelper;
         private readonly IValidatorTranslator _validatiorTranslator;
+        private readonly IParameterTranslator _parameterTranslator;
 
-        public EventValidationExecutor(WorkflowDefinitionHelper workflowDefinitionHelper, IValidatorTranslator validatorTranslator)
+        public EventValidationExecutor(WorkflowDefinitionHelper workflowDefinitionHelper, IValidatorTranslator validatorTranslator, IParameterTranslator parameterTranslator)
         {
             _workflowDefinitionHelper = workflowDefinitionHelper;
             _validatiorTranslator = validatorTranslator;
+            _parameterTranslator = parameterTranslator;
         }
 
         public IEnumerable<ValidationError> ValidateEvent(StateInfo currentState, EventPayload payload, string workflowId)
@@ -51,16 +53,22 @@ namespace WorkflowModule.StateMachine
 
         private IEnumerable<ValidationError> GetValidationFunctionErrors(IEnumerable<Descriptors.InputValidatorDescriptor> inputDescriptors)
         {
-            return inputDescriptors.Where(id =>
+            return inputDescriptors.Where(inputDescriptor =>
             {
-                var validator = _validatiorTranslator.GetValidator(id);
-                var isValid = validator.Invoke(id.Params);
+                var validator = _validatiorTranslator.GetValidator(inputDescriptor);
+                var parameters = ParseValidatorParameters(inputDescriptor.Params);
+                var isValid = validator.Invoke(parameters);
 
                 return !isValid;
             }).Select(id =>
             {
-                return ValidationError.ValidatiorFunctionError();
+                return ValidationError.ValidatiorFunctionError(id.Type);
             });
+        }
+
+        private object[] ParseValidatorParameters(IEnumerable<string> descriptiveParameters)
+        {
+            return descriptiveParameters.Select(dp => _parameterTranslator.GetParameterValue(dp)).ToArray();
         }
 
         private IEnumerable<ValidationError> TypeParameterErrors(Dictionary<string, string> inputs, Dictionary<string, object> data)
