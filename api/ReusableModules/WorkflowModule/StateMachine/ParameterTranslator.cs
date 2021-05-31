@@ -7,7 +7,9 @@ namespace WorkflowModule.StateMachine
     {
         public object GetEventInputParameterValue(string encodedParameter, JObject data)
         {
-            return 42;
+            var token = data.SelectToken(encodedParameter);
+
+            return token.ToObject<object>();
         }
     }
 }

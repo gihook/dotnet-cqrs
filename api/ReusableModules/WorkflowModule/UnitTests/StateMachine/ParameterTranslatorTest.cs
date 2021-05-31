@@ -11,10 +11,28 @@ namespace UnitTests.WorkflowModule.StateMachine
         {
             var encodedParameter = "test";
             var translator = new ParameterTranslator();
-            var evendData = new JObject { ["test"] = 42 };
+            var evendData = new JObject { ["test"] = "testValue" };
             var result = translator.GetEventInputParameterValue(encodedParameter, evendData);
 
-            Assert.Equal(42, result);
+            Assert.Equal("testValue", result);
+        }
+
+        [Fact]
+        public void GetParameterValue_should_translate_nested()
+        {
+            var encodedParameter = "test.nested";
+            var translator = new ParameterTranslator();
+            var evendData = JObject.Parse(@"{
+                                    ""test"": {
+                                         ""nested"": ""value""
+                                    }
+			        }");
+
+            System.Console.WriteLine("evendData:");
+            System.Console.WriteLine(evendData);
+            var result = translator.GetEventInputParameterValue(encodedParameter, evendData);
+
+            Assert.Equal("value", result);
         }
     }
 }
