@@ -10,6 +10,7 @@ namespace WorkflowModule.StateMachine
     {
         private const string EVENT_INPUTS = "EVENT_INPUTS";
         private const string CURENT_STATE_DATA = "CURENT_STATE_DATA";
+        private const string EVENT_EXECUTOR = "EVENT_EXECUTOR";
 
         public object GetParameterValue(string encodedParameter, EventDataWithState eventDataWithState)
         {
@@ -24,24 +25,26 @@ namespace WorkflowModule.StateMachine
             if (encodedParameter.StartsWith(CURENT_STATE_DATA))
             {
                 var path = encodedParameter.Replace(CURENT_STATE_DATA, String.Empty);
-
-                var json = JsonConvert.SerializeObject(eventDataWithState.StateInfo.StateData);
-                var obj = JObject.Parse(json);
+                var obj = ConvertToJObject(eventDataWithState.StateInfo.StateData);
 
                 return GetReturnValue(obj, path);
             }
 
-            if (encodedParameter.StartsWith("EVENT_EXECUTOR"))
+            if (encodedParameter.StartsWith(EVENT_EXECUTOR))
             {
-                var path = encodedParameter.Replace("EVENT_EXECUTOR", String.Empty);
-
-                var json = JsonConvert.SerializeObject(eventDataWithState.EventPayload.EventExecutor);
-                var obj = JObject.Parse(json);
+                var path = encodedParameter.Replace(EVENT_EXECUTOR, String.Empty);
+                var obj = ConvertToJObject(eventDataWithState.EventPayload.EventExecutor);
 
                 return GetReturnValue(obj, path);
             }
 
             return encodedParameter;
+        }
+
+        private JObject ConvertToJObject(object obj)
+        {
+            var json = JsonConvert.SerializeObject(obj);
+            return JObject.Parse(json);
         }
 
         private object GetReturnValue(JObject obj, string path)
