@@ -21,12 +21,19 @@ namespace WorkflowModule.StateMachine
 
         public IEnumerable<ValidationError> ValidateEvent(StateInfo currentState, EventPayload payload, string workflowId)
         {
+            var eventDataWithState = new EventDataWithState
+            {
+                EventPayload = payload,
+                StateInfo = currentState,
+                WorkflowId = workflowId
+            };
+
             var errors = new List<ValidationError>();
 
-            if (EventIsOutOfOrder(currentState, payload)) errors.Add(ValidationError.OrderNumberConfilict());
+            if (EventIsOutOfOrder(eventDataWithState)) errors.Add(ValidationError.OrderNumberConfilict());
 
             var eventIsAllowed = _workflowDefinitionHelper
-                                     .EventIsAllowed(payload.EventName, currentState, workflowId);
+                                     .EventIsAllowed(eventDataWithState);
 
             if (!eventIsAllowed)
             {
@@ -41,23 +48,26 @@ namespace WorkflowModule.StateMachine
             var typeParameterErrors = TypeParameterErrors(eventDescriptor.Inputs, payload.Data);
             errors.AddRange(typeParameterErrors);
 
-            var validationFunctionErrors = GetValidationFunctionErrors(eventDescriptor.ValidatorDescriptors);
+            var validationFunctionErrors = GetValidationFunctionErrors(eventDescriptor.ValidatorDescriptors, eventDataWithState);
             errors.AddRange(validationFunctionErrors);
 
             return errors;
         }
 
-        private bool EventIsOutOfOrder(StateInfo currentState, EventPayload payload)
+        private bool EventIsOutOfOrder(EventDataWithState eventDataWithState)
         {
+            var currentState = eventDataWithState.StateInfo;
+            var payload = eventDataWithState.EventPayload;
+
             return currentState.CurrentOrderNumber + 1 != payload.OrderNumber;
         }
 
-        private IEnumerable<ValidationError> GetValidationFunctionErrors(IEnumerable<Descriptors.InputValidatorDescriptor> inputDescriptors)
+        private IEnumerable<ValidationError> GetValidationFunctionErrors(IEnumerable<Descriptors.InputValidatorDescriptor> inputDescriptors, EventDataWithState eventDataWithState)
         {
             return inputDescriptors.Where(inputDescriptor =>
             {
                 var validator = _validatiorTranslator.GetValidator(inputDescriptor);
-                var parameters = ParseValidatorParameters(inputDescriptor.Params);
+                var parameters = ParseValidatorParameters(inputDescriptor.Params, eventDataWithState);
                 var isValid = validator.Invoke(parameters);
 
                 return !isValid;
@@ -67,9 +77,9 @@ namespace WorkflowModule.StateMachine
             });
         }
 
-        private object[] ParseValidatorParameters(IEnumerable<string> descriptiveParameters)
+        private object[] ParseValidatorParameters(IEnumerable<string> descriptiveParameters, EventDataWithState eventDataWithState)
         {
-            return descriptiveParameters.Select(dp => _parameterTranslator.GetEventInputParameterValue(dp, new JObject())).ToArray();
+            return descriptiveParameters.Select(dp => _parameterTranslator.GetParameterValue(dp, eventDataWithState)).ToArray();
         }
 
         private IEnumerable<ValidationError> TypeParameterErrors(Dictionary<string, string> inputs, JObject data)

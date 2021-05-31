@@ -9,7 +9,7 @@ namespace WorkflowModule.Models
         public Guid AggregateId { get; set; }
         public string EventName { get; set; }
         public JObject Data { get; set; }
-        public EventExecutor eventExecutor { get; set; }
+        public EventExecutor EventExecutor { get; set; }
         public DateTime Timestamp { get; set; }
     }
 }

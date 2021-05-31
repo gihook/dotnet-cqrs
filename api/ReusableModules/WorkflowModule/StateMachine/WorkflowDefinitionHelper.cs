@@ -6,7 +6,7 @@ namespace WorkflowModule.StateMachine
 {
     public class WorkflowDefinitionHelper
     {
-        public virtual bool EventIsAllowed(string eventName, StateInfo stateInfo, string workflowId)
+        public virtual bool EventIsAllowed(EventDataWithState eventDataWithState)
         {
             return false;
         }

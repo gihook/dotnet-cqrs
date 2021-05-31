@@ -1,9 +1,9 @@
-using Newtonsoft.Json.Linq;
+using WorkflowModule.Models;
 
 namespace WorkflowModule.Interfaces
 {
     public interface IParameterTranslator
     {
-        object GetEventInputParameterValue(string encodedParameter, JObject data);
+        object GetParameterValue(string encodedParameter, EventDataWithState eventDataWithState);
     }
 }

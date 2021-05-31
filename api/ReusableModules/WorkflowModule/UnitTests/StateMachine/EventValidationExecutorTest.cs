@@ -180,8 +180,8 @@ namespace UnitTests.WorkflowModule.StateMachine
             var workflowDefinitionHelper = GetWorkflowDefinitionHelper(isEventAllowed, inputs);
             var validatorTranslator = validatorTranslatorInstance ?? GetValidatorTranslator();
             var parameterTranslatorMock = new Mock<IParameterTranslator>();
-            parameterTranslatorMock.Setup(x => x.GetEventInputParameterValue("EVENT_INPUTS.test", It.IsAny<JObject>())).Returns(4);
-            parameterTranslatorMock.Setup(x => x.GetEventInputParameterValue("5", It.IsAny<JObject>())).Returns(5);
+            parameterTranslatorMock.Setup(x => x.GetParameterValue("EVENT_INPUTS.test", It.IsAny<EventDataWithState>())).Returns(4);
+            parameterTranslatorMock.Setup(x => x.GetParameterValue("5", It.IsAny<EventDataWithState>())).Returns(5);
 
             var validationExecutor = new EventValidationExecutor(workflowDefinitionHelper, validatorTranslator, parameterTranslatorMock.Object);
 
@@ -201,7 +201,7 @@ namespace UnitTests.WorkflowModule.StateMachine
         {
             var workflowDefinitionHelper = new Mock<WorkflowDefinitionHelper>();
             workflowDefinitionHelper
-                .Setup(wdh => wdh.EventIsAllowed(It.IsAny<string>(), It.IsAny<StateInfo>(), It.IsAny<string>()))
+                .Setup(wdh => wdh.EventIsAllowed(It.IsAny<EventDataWithState>()))
                 .Returns(returnValue);
 
 
