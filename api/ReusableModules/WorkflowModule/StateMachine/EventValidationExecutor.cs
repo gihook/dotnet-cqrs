@@ -8,11 +8,11 @@ namespace WorkflowModule.StateMachine
 {
     public class EventValidationExecutor : IEventValidationExecutor
     {
-        private readonly WorkflowDefinitionHelper _workflowDefinitionHelper;
+        private readonly IWorkflowDefinitionHelper _workflowDefinitionHelper;
         private readonly IValidatorTranslator _validatiorTranslator;
         private readonly IParameterTranslator _parameterTranslator;
 
-        public EventValidationExecutor(WorkflowDefinitionHelper workflowDefinitionHelper, IValidatorTranslator validatorTranslator, IParameterTranslator parameterTranslator)
+        public EventValidationExecutor(IWorkflowDefinitionHelper workflowDefinitionHelper, IValidatorTranslator validatorTranslator, IParameterTranslator parameterTranslator)
         {
             _workflowDefinitionHelper = workflowDefinitionHelper;
             _validatiorTranslator = validatorTranslator;

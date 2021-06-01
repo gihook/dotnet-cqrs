@@ -197,9 +197,9 @@ namespace UnitTests.WorkflowModule.StateMachine
             return mock.Object;
         }
 
-        private WorkflowDefinitionHelper GetWorkflowDefinitionHelper(bool returnValue, Dictionary<string, string> inputs = null)
+        private IWorkflowDefinitionHelper GetWorkflowDefinitionHelper(bool returnValue, Dictionary<string, string> inputs = null)
         {
-            var workflowDefinitionHelper = new Mock<WorkflowDefinitionHelper>();
+            var workflowDefinitionHelper = new Mock<IWorkflowDefinitionHelper>();
             workflowDefinitionHelper
                 .Setup(wdh => wdh.EventIsAllowed(It.IsAny<EventDataWithState>()))
                 .Returns(returnValue);

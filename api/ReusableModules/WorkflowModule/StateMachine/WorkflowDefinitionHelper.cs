@@ -1,17 +1,18 @@
 using System;
 using WorkflowModule.Descriptors;
+using WorkflowModule.Interfaces;
 using WorkflowModule.Models;
 
 namespace WorkflowModule.StateMachine
 {
-    public class WorkflowDefinitionHelper
+    public class WorkflowDefinitionHelper : IWorkflowDefinitionHelper
     {
-        public virtual bool EventIsAllowed(EventDataWithState eventDataWithState)
+        public bool EventIsAllowed(EventDataWithState eventDataWithState)
         {
             return false;
         }
 
-        public virtual EventDescriptor GetEventDescriptor(string eventName, string workflowId)
+        public EventDescriptor GetEventDescriptor(string eventName, string workflowId)
         {
             throw new NotImplementedException();
         }
