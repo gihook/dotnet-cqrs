@@ -6,6 +6,6 @@ namespace WorkflowModule.Interfaces
     public interface IWorkflowDefinitionHelper
     {
         bool EventIsAllowed(EventDataWithState eventDataWithState);
-        EventDescriptor GetEventDescriptor(string eventName, string workflowId);
+        EventDescriptor GetEventDescriptor(EventDataWithState eventDataWithState);
     }
 }

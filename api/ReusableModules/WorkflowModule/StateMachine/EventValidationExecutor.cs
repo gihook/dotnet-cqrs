@@ -40,7 +40,12 @@ namespace WorkflowModule.StateMachine
                 errors.Add(ValidationError.EventNotAllowed());
             }
 
-            var eventDescriptor = _workflowDefinitionHelper.GetEventDescriptor(payload.EventName, workflowId);
+            var eventDescriptor = _workflowDefinitionHelper.GetEventDescriptor(new EventDataWithState
+            {
+                StateInfo = currentState,
+                EventPayload = payload,
+                WorkflowId = workflowId
+            });
 
             var requiredParameterErrors = RequiredErrors(eventDescriptor.Inputs, payload.Data);
             errors.AddRange(requiredParameterErrors);

@@ -218,7 +218,7 @@ namespace UnitTests.WorkflowModule.StateMachine
                                          ? new Dictionary<string, string>()
                                          : inputs;
             workflowDefinitionHelper
-                .Setup(wdh => wdh.GetEventDescriptor(It.IsAny<string>(), It.IsAny<string>()))
+                .Setup(wdh => wdh.GetEventDescriptor(It.IsAny<EventDataWithState>()))
                 .Returns(eventDescriptor);
 
             return workflowDefinitionHelper.Object;
