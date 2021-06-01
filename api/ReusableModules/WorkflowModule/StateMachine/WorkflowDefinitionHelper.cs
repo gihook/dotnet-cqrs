@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using WorkflowModule.Descriptors;
@@ -39,7 +38,19 @@ namespace WorkflowModule.StateMachine
 
         public EventDescriptor GetEventDescriptor(EventDataWithState eventDataWithState)
         {
-            throw new NotImplementedException();
+            var workflowId = eventDataWithState.WorkflowId;
+            var descriptor = _workflowDescriptors[workflowId];
+            var eventName = eventDataWithState.EventPayload.EventName;
+
+            var matchedEventDescriptors = descriptor.EventDescriptors
+                                              .Where(x => x.Name == eventName);
+
+            if (matchedEventDescriptors.Count() == 0)
+            {
+                throw new UnknownEventException(eventName);
+            }
+
+            return matchedEventDescriptors.First();
         }
     }
 }

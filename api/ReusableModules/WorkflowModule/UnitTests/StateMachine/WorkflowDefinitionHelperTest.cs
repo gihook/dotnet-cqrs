@@ -78,9 +78,61 @@ namespace UnitTests.WorkflowModule.StateMachine
             Assert.Throws<UnknownWorkflowException>(() => helper.EventIsAllowed(data));
         }
 
+        [Fact]
+        public void GetEventDescriptor_should_return_correct_event_descriptor()
+        {
+            var payload = new EventPayload()
+            {
+                EventName = "SentToManager"
+            };
+            var data = new EventDataWithState()
+            {
+                WorkflowId = "wf1",
+                EventPayload = payload
+            };
+
+            var definitionLoader = GetDefinitionLoader();
+
+            var helper = new WorkflowDefinitionHelper(definitionLoader);
+            var result = helper.GetEventDescriptor(data);
+
+            Assert.Equal("ExampleReducer", result.ReducerDescriptor.Type);
+        }
+
+        [Fact]
+        public void GetEventDescriptor_should_throw_UnknownEventExeception_for_non_exsisting_event()
+        {
+            var payload = new EventPayload()
+            {
+                EventName = "NonExistingEvent"
+            };
+            var data = new EventDataWithState()
+            {
+                WorkflowId = "wf1",
+                EventPayload = payload
+            };
+
+            var definitionLoader = GetDefinitionLoader();
+
+            var helper = new WorkflowDefinitionHelper(definitionLoader);
+
+            Assert.Throws<UnknownEventException>(() => helper.GetEventDescriptor(data));
+        }
+
         private IWorkflowDefinitionLoader GetDefinitionLoader()
         {
             var definitionLoaderMock = new Mock<IWorkflowDefinitionLoader>();
+            var eventDescriptors = new EventDescriptor[]
+            {
+                new EventDescriptor()
+                {
+                    Name = "SentToManager",
+                    ReducerDescriptor = new ReducerDescriptor()
+                    {
+                        Type = "ExampleReducer"
+                    }
+                }
+            };
             var eventTransitions = new EventTransitionDescriptor[]
             {
                 new EventTransitionDescriptor()
@@ -94,7 +146,8 @@ namespace UnitTests.WorkflowModule.StateMachine
             {
                 ["wf1"] = new WorkflowDescriptor()
                 {
-                    EventTransitionDescriptors = eventTransitions
+                    EventTransitionDescriptors = eventTransitions,
+                    EventDescriptors = eventDescriptors
                 }
             };
 
