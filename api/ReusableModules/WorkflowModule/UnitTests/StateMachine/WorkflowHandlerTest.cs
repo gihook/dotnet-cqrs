@@ -18,7 +18,7 @@ namespace UnitTests.WorkflowModule.StateMachine
             var aggregateId = Guid.NewGuid();
             var workflowId = "SampleWorkflow";
 
-            var stateCalculator = new Mock<StateCalculator>();
+            var stateCalculator = new Mock<IStateCalculator>();
             stateCalculator
                 .Setup(sc => sc.GetCurrentStateInfo(aggregateId, workflowId))
                 .Returns(StateInfo.NullState);
@@ -36,7 +36,7 @@ namespace UnitTests.WorkflowModule.StateMachine
             var aggregateId = Guid.NewGuid();
             var workflowId = "SampleWorkflow";
 
-            var stateCalculator = new Mock<StateCalculator>();
+            var stateCalculator = new Mock<IStateCalculator>();
             stateCalculator
                 .Setup(sc => sc.ApplyEvent(It.IsAny<EventPayload>(), workflowId))
                 .Returns(new StateInfo() { State = "NewState" });

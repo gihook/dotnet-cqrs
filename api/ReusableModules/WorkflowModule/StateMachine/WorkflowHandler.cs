@@ -8,10 +8,10 @@ namespace WorkflowModule.StateMachine
 {
     public class WorkflowHandler
     {
-        private readonly StateCalculator _stateCalculator;
+        private readonly IStateCalculator _stateCalculator;
         private readonly IEventValidationExecutor _eventValidationExecutor;
 
-        public WorkflowHandler(StateCalculator stateCalculator, IEventValidationExecutor eventValidationExecutor)
+        public WorkflowHandler(IStateCalculator stateCalculator, IEventValidationExecutor eventValidationExecutor)
         {
             _stateCalculator = stateCalculator;
             _eventValidationExecutor = eventValidationExecutor;

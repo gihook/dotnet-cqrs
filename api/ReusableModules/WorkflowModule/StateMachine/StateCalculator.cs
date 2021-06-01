@@ -3,14 +3,14 @@ using WorkflowModule.Models;
 
 namespace WorkflowModule.StateMachine
 {
-    public class StateCalculator
+    public class StateCalculator : IStateCalculator
     {
-        public virtual StateInfo GetCurrentStateInfo(Guid aggregateId, string workflowId)
+        public StateInfo GetCurrentStateInfo(Guid aggregateId, string workflowId)
         {
             return null;
         }
 
-        public virtual StateInfo ApplyEvent(EventPayload payload, string workflowId)
+        public StateInfo ApplyEvent(EventPayload payload, string workflowId)
         {
             return null;
         }
