@@ -23,14 +23,14 @@ namespace WorkflowModule.StateMachine
             return _stateCalculator.GetCurrentStateInfo(aggregateId, workflowId);
         }
 
-        public async Task<StateInfo> ExecuteEvent(EventPayload payload, string workflowId)
+        public async Task<EventPayload> ExecuteEvent(EventPayload payload, string workflowId)
         {
             var currentState = await GetCurrentStateInfo(payload.AggregateId, workflowId);
             var validationErrors = _eventValidationExecutor.ValidateEvent(currentState, payload, workflowId);
 
             if (validationErrors.Count() != 0) throw new EventValidationException(validationErrors);
 
-            return await _stateCalculator.ApplyEvent(payload, workflowId);
+            return await _stateCalculator.ApplyEvent(payload);
         }
     }
 }

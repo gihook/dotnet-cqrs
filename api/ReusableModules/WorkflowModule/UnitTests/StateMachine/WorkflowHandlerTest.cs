@@ -39,8 +39,8 @@ namespace UnitTests.WorkflowModule.StateMachine
 
             var stateCalculator = new Mock<IStateCalculator>();
             stateCalculator
-                .Setup(sc => sc.ApplyEvent(It.IsAny<EventPayload>(), workflowId))
-                .ReturnsAsync(new StateInfo() { State = "NewState" });
+                .Setup(sc => sc.ApplyEvent(It.IsAny<EventPayload>()))
+                .ReturnsAsync(new EventPayload());
 
             var eventValidationExecutor = new Mock<IEventValidationExecutor>();
             eventValidationExecutor
@@ -52,9 +52,9 @@ namespace UnitTests.WorkflowModule.StateMachine
             var payload = new EventPayload();
             payload.AggregateId = aggregateId;
 
-            var stateInfo = await workflowHandler.ExecuteEvent(payload, workflowId);
+            var result = await workflowHandler.ExecuteEvent(payload, workflowId);
 
-            Assert.Equal("NewState", stateInfo.State);
+            Assert.NotNull(result);
         }
 
         [Fact]

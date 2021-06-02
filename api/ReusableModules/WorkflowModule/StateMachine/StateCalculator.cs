@@ -50,9 +50,9 @@ namespace WorkflowModule.StateMachine
             return newStateInfo;
         }
 
-        public Task<StateInfo> ApplyEvent(EventPayload payload, string workflowId)
+        public async Task<EventPayload> ApplyEvent(EventPayload payload)
         {
-            return Task.FromResult<StateInfo>(null);
+            return await _eventStore.WriteToEventStream(payload.AggregateId, payload);
         }
     }
 }
