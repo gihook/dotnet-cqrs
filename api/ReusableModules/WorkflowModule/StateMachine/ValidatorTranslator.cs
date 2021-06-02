@@ -37,17 +37,27 @@ namespace WorkflowModule.StateMachine
 
         public Func<object[], bool> GetValidator(InputValidatorDescriptor descriptor)
         {
-            var parsedType = descriptor.Type.Replace("NOT_", "");
+            return GetFunction(descriptor.Type);
+        }
 
-            if (!_validators.ContainsKey(parsedType)) return x => false;
+        public Func<object[], bool> GetValidationFunction(string functionName)
+        {
+            return GetFunction(functionName);
+        }
 
-            var isNegated = descriptor.Type != parsedType;
+        private Func<object[], bool> GetFunction(string functionName)
+        {
+            var parsedName = functionName.Replace("NOT_", "");
+
+            if (!_validators.ContainsKey(parsedName)) return x => false;
+
+            var isNegated = functionName != parsedName;
             if (isNegated)
             {
-                return x => !_validators[parsedType].IsValid(x);
+                return x => !_validators[parsedName].IsTrue(x);
             }
 
-            return x => _validators[parsedType].IsValid(x);
+            return x => _validators[parsedName].IsTrue(x);
         }
 
     }

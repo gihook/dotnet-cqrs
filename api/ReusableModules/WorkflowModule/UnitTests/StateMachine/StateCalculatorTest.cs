@@ -106,7 +106,7 @@ namespace UnitTests.WorkflowModule.StateMachine
         {
             var mock = new Mock<IStateChanger>();
             mock
-            .Setup(x => x.GetNewState(It.IsAny<object>(), It.IsAny<EventPayload>(), "wf1"))
+            .Setup(x => x.GetNewState(It.IsAny<EventDataWithState>()))
             .Returns("NewState");
 
             return mock.Object;

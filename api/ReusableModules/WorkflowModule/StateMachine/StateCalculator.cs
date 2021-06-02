@@ -27,7 +27,17 @@ namespace WorkflowModule.StateMachine
             {
                 var reducer = _reducerTranslator.GetReducer(payload, workflowId);
                 var stateData = reducer.Reduce(stateInfo.StateData, payload);
-                var newState = _stateChanger.GetNewState(stateData, payload, workflowId);
+
+                stateInfo.StateData = stateData;
+                stateInfo.CurrentOrderNumber = payload.OrderNumber;
+
+                var eventDataWithState = new EventDataWithState
+                {
+                    StateInfo = stateInfo,
+                    EventPayload = payload,
+                    WorkflowId = workflowId
+                };
+                var newState = _stateChanger.GetNewState(eventDataWithState);
 
                 return new StateInfo
                 {

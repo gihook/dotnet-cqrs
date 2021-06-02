@@ -7,5 +7,6 @@ namespace WorkflowModule.Interfaces
     {
         bool CanParse(string type, object parameterValue);
         Func<object[], bool> GetValidator(InputValidatorDescriptor descriptor);
+        Func<object[], bool> GetValidationFunction(string functionName);
     }
 }

@@ -53,7 +53,7 @@ namespace UnitTests.WorkflowModule.StateMachine
         {
             var translator = new ValidatorTranslator();
             var validatorMock = new Mock<IInputValidator>();
-            validatorMock.Setup(x => x.IsValid(It.IsAny<object[]>())).Returns(true);
+            validatorMock.Setup(x => x.IsTrue(It.IsAny<object[]>())).Returns(true);
             translator.RegisterValidator("IsDefined", validatorMock.Object);
 
             var descriptor = new InputValidatorDescriptor()
@@ -72,7 +72,7 @@ namespace UnitTests.WorkflowModule.StateMachine
         {
             var translator = new ValidatorTranslator();
             var validatorMock = new Mock<IInputValidator>();
-            validatorMock.Setup(x => x.IsValid(It.IsAny<object[]>())).Returns(true);
+            validatorMock.Setup(x => x.IsTrue(It.IsAny<object[]>())).Returns(true);
             translator.RegisterValidator("IsDefined", validatorMock.Object);
 
             var descriptor = new InputValidatorDescriptor()
