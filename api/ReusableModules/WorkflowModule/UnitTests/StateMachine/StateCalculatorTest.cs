@@ -17,7 +17,8 @@ namespace UnitTests.WorkflowModule.StateMachine
             var eventStore = GetEventStore();
             var translator = GetReducerTranslator();
 
-            var stateCalculator = new StateCalculator(eventStore, translator);
+            var conditionTranslator = GetConditionTranslator();
+            var stateCalculator = new StateCalculator(eventStore, translator, conditionTranslator);
 
             var aggregateId = new Guid();
             var workflowId = "wf1";
@@ -42,7 +43,8 @@ namespace UnitTests.WorkflowModule.StateMachine
 
             var translator = GetReducerTranslator(new { test = 1 });
 
-            var stateCalculator = new StateCalculator(eventStore, translator);
+            var conditionTranslator = GetConditionTranslator();
+            var stateCalculator = new StateCalculator(eventStore, translator, conditionTranslator);
 
             var aggregateId = new Guid();
             var workflowId = "wf1";
@@ -50,6 +52,7 @@ namespace UnitTests.WorkflowModule.StateMachine
 
             Assert.Equal(1, (result.StateData as dynamic).test);
             Assert.Equal(1, result.CurrentOrderNumber);
+            Assert.Equal("NewState", result.State);
         }
 
         [Fact]
@@ -76,7 +79,9 @@ namespace UnitTests.WorkflowModule.StateMachine
                 .Setup(x => x.GetReducer(It.Is<EventPayload>(ed => ed.EventName == "SentToManager"), "wf1"))
                 .Returns(GetReducer(new { test = "sample" }));
 
-            var stateCalculator = new StateCalculator(eventStore, translatorMock.Object);
+            var conditionTranslator = GetConditionTranslator();
+            var stateCalculator = new StateCalculator(eventStore, translatorMock.Object, conditionTranslator);
+
             var aggregateId = new Guid();
             var workflowId = "wf1";
             var result = await stateCalculator.GetCurrentStateInfo(aggregateId, workflowId);
@@ -95,6 +100,18 @@ namespace UnitTests.WorkflowModule.StateMachine
             .Returns(reducer);
 
             return translator.Object;
+        }
+
+        private IConditionTranslator GetConditionTranslator()
+        {
+            var matcherMock = new Mock<IConditionMatcher>();
+
+            var mock = new Mock<IConditionTranslator>();
+            mock
+            .Setup(x => x.GetNewState(It.IsAny<object>(), It.IsAny<EventPayload>(), "wf1"))
+            .Returns("NewState");
+
+            return mock.Object;
         }
 
         private IEventReducer GetReducer(object reducerResult)

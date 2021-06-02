@@ -10,11 +10,13 @@ namespace WorkflowModule.StateMachine
     {
         private readonly IEventStore _eventStore;
         private readonly IReducerTranslator _reducerTranslator;
+        private readonly IConditionTranslator _conditionTranslator;
 
-        public StateCalculator(IEventStore eventStore, IReducerTranslator reducerTranslator)
+        public StateCalculator(IEventStore eventStore, IReducerTranslator reducerTranslator, IConditionTranslator conditionTranslator)
         {
             _eventStore = eventStore;
             _reducerTranslator = reducerTranslator;
+            _conditionTranslator = conditionTranslator;
         }
 
         public async Task<StateInfo> GetCurrentStateInfo(Guid aggregateId, string workflowId)
@@ -25,11 +27,13 @@ namespace WorkflowModule.StateMachine
             {
                 var reducer = _reducerTranslator.GetReducer(payload, workflowId);
                 var stateData = reducer.Reduce(stateInfo.StateData, payload);
+                var newState = _conditionTranslator.GetNewState(stateData, payload, workflowId);
 
                 return new StateInfo
                 {
                     StateData = stateData,
-                    CurrentOrderNumber = payload.OrderNumber
+                    CurrentOrderNumber = payload.OrderNumber,
+                    State = newState
                 };
             });
 
