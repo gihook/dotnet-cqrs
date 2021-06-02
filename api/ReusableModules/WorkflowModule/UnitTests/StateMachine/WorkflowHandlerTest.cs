@@ -7,13 +7,14 @@ using WorkflowModule.Models;
 using WorkflowModule.StateMachine;
 using WorkflowModule.Interfaces;
 using Xunit;
+using System.Threading.Tasks;
 
 namespace UnitTests.WorkflowModule.StateMachine
 {
     public class WorkflowHandlerTest
     {
         [Fact]
-        public void Should_Return_Correct_State_Info()
+        public async Task Should_Return_Correct_State_Info()
         {
             var aggregateId = Guid.NewGuid();
             var workflowId = "SampleWorkflow";
@@ -21,17 +22,17 @@ namespace UnitTests.WorkflowModule.StateMachine
             var stateCalculator = new Mock<IStateCalculator>();
             stateCalculator
                 .Setup(sc => sc.GetCurrentStateInfo(aggregateId, workflowId))
-                .Returns(StateInfo.NullState);
+                .ReturnsAsync(StateInfo.NullState);
 
             var workflowHandler = new WorkflowHandler(stateCalculator.Object, null);
 
-            var stateInfo = workflowHandler.GetCurrentStateInfo(aggregateId, workflowId);
+            var stateInfo = await workflowHandler.GetCurrentStateInfo(aggregateId, workflowId);
 
             Assert.Equal(StateInfo.NullState.State, stateInfo.State);
         }
 
         [Fact]
-        public void Should_Correctly_Execute_Event()
+        public async Task Should_Correctly_Execute_Event()
         {
             var aggregateId = Guid.NewGuid();
             var workflowId = "SampleWorkflow";
@@ -39,7 +40,7 @@ namespace UnitTests.WorkflowModule.StateMachine
             var stateCalculator = new Mock<IStateCalculator>();
             stateCalculator
                 .Setup(sc => sc.ApplyEvent(It.IsAny<EventPayload>(), workflowId))
-                .Returns(new StateInfo() { State = "NewState" });
+                .ReturnsAsync(new StateInfo() { State = "NewState" });
 
             var eventValidationExecutor = new Mock<IEventValidationExecutor>();
             eventValidationExecutor
@@ -51,7 +52,7 @@ namespace UnitTests.WorkflowModule.StateMachine
             var payload = new EventPayload();
             payload.AggregateId = aggregateId;
 
-            var stateInfo = workflowHandler.ExecuteEvent(payload, workflowId);
+            var stateInfo = await workflowHandler.ExecuteEvent(payload, workflowId);
 
             Assert.Equal("NewState", stateInfo.State);
         }
@@ -62,7 +63,7 @@ namespace UnitTests.WorkflowModule.StateMachine
             var aggregateId = Guid.NewGuid();
             var workflowId = "SampleWorkflow";
 
-            var stateCalculator = new Mock<StateCalculator>();
+            var stateCalculator = new Mock<IStateCalculator>();
 
             var eventValidationExecutor = new Mock<IEventValidationExecutor>();
             eventValidationExecutor
@@ -74,7 +75,7 @@ namespace UnitTests.WorkflowModule.StateMachine
             var payload = new EventPayload();
             payload.AggregateId = aggregateId;
 
-            Assert.Throws<EventValidationException>(() => workflowHandler.ExecuteEvent(payload, workflowId));
+            Assert.ThrowsAsync<EventValidationException>(() => workflowHandler.ExecuteEvent(payload, workflowId));
         }
     }
 }

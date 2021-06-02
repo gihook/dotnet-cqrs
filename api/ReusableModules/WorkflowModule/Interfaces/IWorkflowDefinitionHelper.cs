@@ -7,5 +7,6 @@ namespace WorkflowModule.Interfaces
     {
         bool EventIsAllowed(EventDataWithState eventDataWithState);
         EventDescriptor GetEventDescriptor(EventDataWithState eventDataWithState);
+        ConditionalTransition GetMatchingTransition(StateInfo stateInfo, string eventName);
     }
 }
