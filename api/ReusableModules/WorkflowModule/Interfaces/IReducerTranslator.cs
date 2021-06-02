@@ -1,9 +1,9 @@
-using WorkflowModule.Descriptors;
+using WorkflowModule.Models;
 
 namespace WorkflowModule.Interfaces
 {
     public interface IReducerTranslator
     {
-        IEventReducer GetReducer(EventDescriptor descriptor);
+        IEventReducer GetReducer(EventPayload payload, string workflowId);
     }
 }

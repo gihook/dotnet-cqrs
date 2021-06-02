@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Moq;
-using Newtonsoft.Json;
-using WorkflowModule.Descriptors;
 using WorkflowModule.Interfaces;
 using WorkflowModule.Models;
 using WorkflowModule.StateMachine;
@@ -16,11 +14,10 @@ namespace UnitTests.WorkflowModule.StateMachine
         [Fact]
         public async Task GetCurrentStateInfo_should_return_null_state_initially()
         {
-            var definitionHelper = GetDefinitionHelper();
             var eventStore = GetEventStore();
             var translator = GetReducerTranslator();
 
-            var stateCalculator = new StateCalculator(eventStore, definitionHelper, translator);
+            var stateCalculator = new StateCalculator(eventStore, translator);
 
             var aggregateId = new Guid();
             var workflowId = "wf1";
@@ -43,11 +40,9 @@ namespace UnitTests.WorkflowModule.StateMachine
             var events = new EventPayload[] { firstEvent };
             var eventStore = GetEventStore(events);
 
-            var definitionHelper = GetDefinitionHelper();
-
             var translator = GetReducerTranslator(new { test = 1 });
 
-            var stateCalculator = new StateCalculator(eventStore, definitionHelper, translator);
+            var stateCalculator = new StateCalculator(eventStore, translator);
 
             var aggregateId = new Guid();
             var workflowId = "wf1";
@@ -72,17 +67,16 @@ namespace UnitTests.WorkflowModule.StateMachine
             };
             var events = new EventPayload[] { firstEvent, secondEvent };
             var eventStore = GetEventStore(events);
-            var definitionHelper = GetDefinitionHelper();
             var translatorMock = new Mock<IReducerTranslator>();
             translatorMock
-                .Setup(x => x.GetReducer(It.Is<EventDescriptor>(ed => ed.Name == "DraftSaved")))
+                .Setup(x => x.GetReducer(It.Is<EventPayload>(ed => ed.EventName == "DraftSaved"), "wf1"))
                 .Returns(GetReducer(new { test = 1 }));
 
             translatorMock
-                .Setup(x => x.GetReducer(It.Is<EventDescriptor>(ed => ed.Name == "SentToManager")))
+                .Setup(x => x.GetReducer(It.Is<EventPayload>(ed => ed.EventName == "SentToManager"), "wf1"))
                 .Returns(GetReducer(new { test = "sample" }));
 
-            var stateCalculator = new StateCalculator(eventStore, definitionHelper, translatorMock.Object);
+            var stateCalculator = new StateCalculator(eventStore, translatorMock.Object);
             var aggregateId = new Guid();
             var workflowId = "wf1";
             var result = await stateCalculator.GetCurrentStateInfo(aggregateId, workflowId);
@@ -97,7 +91,7 @@ namespace UnitTests.WorkflowModule.StateMachine
 
             var translator = new Mock<IReducerTranslator>();
             translator
-            .Setup(x => x.GetReducer(It.IsAny<EventDescriptor>()))
+            .Setup(x => x.GetReducer(It.IsAny<EventPayload>(), "wf1"))
             .Returns(reducer);
 
             return translator.Object;
@@ -121,28 +115,6 @@ namespace UnitTests.WorkflowModule.StateMachine
                 .ReturnsAsync(storedEvents ?? new EventPayload[0]);
 
             return eventStoreMock.Object;
-        }
-
-        private IWorkflowDefinitionHelper GetDefinitionHelper()
-        {
-            var definitionHelperMock = new Mock<IWorkflowDefinitionHelper>();
-            definitionHelperMock
-                .Setup(x => x.GetMatchingTransition(It.IsAny<StateInfo>(), "DraftSaved"))
-                .Returns(new ConditionalTransition());
-
-            definitionHelperMock
-                .Setup(x => x.GetEventDescriptor(
-                    It.Is<EventDataWithState>(ed => ed.EventPayload.EventName == "DraftSaved")
-                    ))
-                .Returns(new EventDescriptor() { Name = "DraftSaved" });
-
-            definitionHelperMock
-                .Setup(x => x.GetEventDescriptor(
-                    It.Is<EventDataWithState>(ed => ed.EventPayload.EventName == "SentToManager")
-                    ))
-                .Returns(new EventDescriptor() { Name = "SentToManager" });
-
-            return definitionHelperMock.Object;
         }
     }
 }

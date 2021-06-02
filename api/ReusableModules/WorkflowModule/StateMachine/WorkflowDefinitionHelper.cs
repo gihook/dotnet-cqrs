@@ -53,7 +53,7 @@ namespace WorkflowModule.StateMachine
             return matchedEventDescriptors.First();
         }
 
-        public ConditionalTransition GetMatchingTransition(StateInfo stateInfo, string eventName)
+        public EventTransitionDescriptor GetMatchingEventTransitionDescriptor(StateInfo stateInfo, string eventName)
         {
             throw new System.NotImplementedException();
         }

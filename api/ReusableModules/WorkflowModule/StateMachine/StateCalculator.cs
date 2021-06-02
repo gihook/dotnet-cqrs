@@ -9,13 +9,11 @@ namespace WorkflowModule.StateMachine
     public class StateCalculator : IStateCalculator
     {
         private readonly IEventStore _eventStore;
-        private readonly IWorkflowDefinitionHelper _workflowDefinitionHelper;
         private readonly IReducerTranslator _reducerTranslator;
 
-        public StateCalculator(IEventStore eventStore, IWorkflowDefinitionHelper workflowDefinitionHelper, IReducerTranslator reducerTranslator)
+        public StateCalculator(IEventStore eventStore, IReducerTranslator reducerTranslator)
         {
             _eventStore = eventStore;
-            _workflowDefinitionHelper = workflowDefinitionHelper;
             _reducerTranslator = reducerTranslator;
         }
 
@@ -25,7 +23,7 @@ namespace WorkflowModule.StateMachine
 
             var newStateInfo = storedEvents.Aggregate(StateInfo.NullState, (stateInfo, payload) =>
             {
-                var reducer = GetReducer(payload, stateInfo, workflowId);
+                var reducer = _reducerTranslator.GetReducer(payload, workflowId);
                 var stateData = reducer.Reduce(stateInfo.StateData, payload);
 
                 return new StateInfo
@@ -36,20 +34,6 @@ namespace WorkflowModule.StateMachine
             });
 
             return newStateInfo;
-        }
-
-        private IEventReducer GetReducer(EventPayload payload, StateInfo currentStateInfo, string workflowId)
-        {
-            var eventDataWithState = new EventDataWithState()
-            {
-                WorkflowId = workflowId,
-                StateInfo = currentStateInfo,
-                EventPayload = payload
-            };
-            var eventDescriptor = _workflowDefinitionHelper.GetEventDescriptor(eventDataWithState);
-            var reducer = _reducerTranslator.GetReducer(eventDescriptor);
-
-            return reducer;
         }
 
         public Task<StateInfo> ApplyEvent(EventPayload payload, string workflowId)
