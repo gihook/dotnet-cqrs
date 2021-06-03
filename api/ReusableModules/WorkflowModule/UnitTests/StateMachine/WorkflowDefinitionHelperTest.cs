@@ -119,6 +119,32 @@ namespace UnitTests.WorkflowModule.StateMachine
             Assert.Throws<UnknownEventException>(() => helper.GetEventDescriptor(data));
         }
 
+        [Fact]
+        public void GetMatchingEventTransitionDescriptor_should_return_matched_transition()
+        {
+            var definitionLoader = GetDefinitionLoader();
+            var helper = new WorkflowDefinitionHelper(definitionLoader);
+
+            var eventDataWithState = new EventDataWithState
+            {
+                EventPayload = new EventPayload
+                {
+                    EventName = "SentToManager"
+                },
+                WorkflowId = "wf1",
+                StateInfo = new StateInfo
+                {
+                    State = "Draft"
+                }
+            };
+
+            var result = helper.GetMatchingEventTransitionDescriptor(eventDataWithState);
+
+            Assert.NotNull(result);
+            Assert.Equal("Draft", result.FromState);
+            Assert.Equal("SentToManager", result.Event);
+        }
+
         private IWorkflowDefinitionLoader GetDefinitionLoader()
         {
             var definitionLoaderMock = new Mock<IWorkflowDefinitionLoader>();

@@ -55,7 +55,17 @@ namespace WorkflowModule.StateMachine
 
         public EventTransitionDescriptor GetMatchingEventTransitionDescriptor(EventDataWithState eventDataWithState)
         {
-            throw new System.NotImplementedException();
+            var descriptor = _workflowDescriptors[eventDataWithState.WorkflowId];
+
+            var eventName = eventDataWithState.EventPayload.EventName;
+            var state = eventDataWithState.StateInfo.State;
+
+            var result = descriptor.EventTransitionDescriptors.First(et =>
+            {
+                return et.Event == eventName && et.FromState == state;
+            });
+
+            return result;
         }
     }
 }
