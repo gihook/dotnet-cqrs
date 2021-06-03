@@ -10,7 +10,6 @@ namespace UnitTests.WorkflowStorage
         [Fact]
         public void Should_Load_Files_From_FS()
         {
-
             var assemblyLocation = Assembly.GetEntryAssembly().Location;
             var assemblyFolder = Path.GetDirectoryName(assemblyLocation);
 

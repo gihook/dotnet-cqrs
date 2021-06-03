@@ -47,10 +47,11 @@ namespace WorkflowModule.StateMachine
                 WorkflowId = workflowId
             });
 
-            var requiredParameterErrors = RequiredErrors(eventDescriptor.Inputs, payload.Data);
+            var payloadData = payload.Data ?? new JObject();
+            var requiredParameterErrors = RequiredErrors(eventDescriptor.Inputs, payloadData);
             errors.AddRange(requiredParameterErrors);
 
-            var typeParameterErrors = TypeParameterErrors(eventDescriptor.Inputs, payload.Data);
+            var typeParameterErrors = TypeParameterErrors(eventDescriptor.Inputs, payloadData);
             errors.AddRange(typeParameterErrors);
 
             var validationFunctionErrors = GetValidationFunctionErrors(eventDescriptor.ValidatorDescriptors, eventDataWithState);
@@ -69,16 +70,25 @@ namespace WorkflowModule.StateMachine
 
         private IEnumerable<ValidationError> GetValidationFunctionErrors(IEnumerable<Descriptors.InputValidatorDescriptor> inputDescriptors, EventDataWithState eventDataWithState)
         {
-            return inputDescriptors.Where(inputDescriptor =>
+            return inputDescriptors.Select(inputDescriptor =>
             {
                 var validator = _validatiorTranslator.GetValidator(inputDescriptor);
                 var parameters = ParseValidatorParameters(inputDescriptor.Params, eventDataWithState);
                 var isValid = validator.Invoke(parameters);
 
-                return !isValid;
-            }).Select(id =>
+                return (inputDescriptor, !isValid, parameters);
+            })
+            .Where(tuple =>
             {
-                return ValidationError.ValidatiorFunctionError(id.Type);
+                var (inputDescriptor, isValid, parameters) = tuple;
+
+                return isValid;
+            })
+            .Select(tuple =>
+            {
+                var (inputDescriptor, isValid, parameters) = tuple;
+
+                return ValidationError.ValidatiorFunctionError(inputDescriptor.Type, parameters);
             });
         }
 

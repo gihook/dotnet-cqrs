@@ -4,6 +4,7 @@ namespace WorkflowModule.Models
     {
         public string Id { get; set; }
         public string ParameterName { get; set; }
+        public object[] Parameters { get; set; } = new object[0];
 
         public static ValidationError OrderNumberConfilict()
         {
@@ -39,11 +40,12 @@ namespace WorkflowModule.Models
             return instance;
         }
 
-        public static ValidationError ValidatiorFunctionError(string type)
+        public static ValidationError ValidatiorFunctionError(string type, object[] parameters)
         {
             var instance = new ValidationError();
             instance.Id = "ValidatiorFunctionError";
             instance.ParameterName = type;
+            instance.Parameters = parameters;
 
             return instance;
         }

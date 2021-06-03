@@ -17,7 +17,7 @@ namespace WorkflowModule.StateMachine
             if (encodedParameter.StartsWith(EVENT_INPUTS))
             {
                 var path = encodedParameter.Replace(EVENT_INPUTS, String.Empty);
-                var eventData = eventDataWithState.EventPayload.Data;
+                var eventData = eventDataWithState.EventPayload.Data ?? new JObject();
 
                 return GetReturnValue(eventData, path);
             }

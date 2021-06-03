@@ -13,7 +13,6 @@ namespace InjectionConfig
     {
         public static void Configure(ContainerBuilder builder)
         {
-
             builder.RegisterDataAccess();
             builder.RegisterInjectedServices();
             builder.RegisterActionCore();
