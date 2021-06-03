@@ -9,7 +9,7 @@ namespace WorkflowModule.StateMachine
     public class ParameterTranslator : IParameterTranslator
     {
         private const string EVENT_INPUTS = "EVENT_INPUTS";
-        private const string CURENT_STATE_DATA = "CURENT_STATE_DATA";
+        private const string CURRENT_STATE_DATA = "CURRENT_STATE_DATA";
         private const string EVENT_EXECUTOR = "EVENT_EXECUTOR";
 
         public object GetParameterValue(string encodedParameter, EventDataWithState eventDataWithState)
@@ -22,9 +22,9 @@ namespace WorkflowModule.StateMachine
                 return GetReturnValue(eventData, path);
             }
 
-            if (encodedParameter.StartsWith(CURENT_STATE_DATA))
+            if (encodedParameter.StartsWith(CURRENT_STATE_DATA))
             {
-                var path = encodedParameter.Replace(CURENT_STATE_DATA, String.Empty);
+                var path = encodedParameter.Replace(CURRENT_STATE_DATA, String.Empty);
                 var obj = ConvertToJObject(eventDataWithState.StateInfo.StateData);
 
                 return GetReturnValue(obj, path);

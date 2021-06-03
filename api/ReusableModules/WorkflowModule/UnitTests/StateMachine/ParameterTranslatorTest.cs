@@ -65,7 +65,7 @@ namespace UnitTests.WorkflowModule.StateMachine
         [Fact]
         public void GetParameterValue_should_parse_current_state_parameter()
         {
-            var encodedParameter = "CURENT_STATE_DATA.Sample.Nested[0]";
+            var encodedParameter = "CURRENT_STATE_DATA.Sample.Nested[0]";
             var currentStateData = new { Sample = new { Nested = new string[] { "test" } } };
             var eventDataWithState = new EventDataWithState
             {

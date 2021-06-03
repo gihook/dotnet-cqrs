@@ -22,12 +22,12 @@ events:
     validators:
       - type: IsLongerThan
         params: [EVENT_INPUTS.title, 5]
-    reducer: PasteInputs # this should be built in reducer
+    reducer: InitializeSubmission # this should be built in reducer
 
   - name: SummarySaved
     inputs:
       summary: object
-    reducer: OverrideStateDataKeys
+    reducer: SaveSummary
 
   - name: SendToManager
     inputs:
@@ -74,7 +74,7 @@ eventTransitions:
     fromState: Draft
     conditionalTransition:
       - condition: IsDefined # same functions as in validators
-        params: [CALCULATED_STATE_DATA.summary.general.fdoa]
+        params: [CURRENT_STATE_DATA.Summary.General.Fdoa]
         toState: ManagerReview
       # conditionalTransition will set first matched state, if none mathe this one will
       - condition: TRUE
@@ -101,7 +101,7 @@ eventTransitions:
     conditionalTransition:
       # voting is finished when quorum is reached
       - condition: IsTrue
-        params: [CALCULATED_STATE_DATA.quorumReached]
+        params: [CURRENT_STATE_DATA.quorumReached]
         toState: VotingFinished
       - condition: TRUE
         toState: WaitingForVotes
