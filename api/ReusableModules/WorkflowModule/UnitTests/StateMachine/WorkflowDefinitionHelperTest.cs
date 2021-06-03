@@ -145,6 +145,31 @@ namespace UnitTests.WorkflowModule.StateMachine
             Assert.Equal("SentToManager", result.Event);
         }
 
+        [Fact]
+        public void GetMatchingEventTransitionDescriptor_should_throw_NonExistingTransitionException()
+        {
+            var definitionLoader = GetDefinitionLoader();
+            var helper = new WorkflowDefinitionHelper(definitionLoader);
+
+            var eventDataWithState = new EventDataWithState
+            {
+                EventPayload = new EventPayload
+                {
+                    EventName = "NonExistinEventHappened"
+                },
+                WorkflowId = "wf1",
+                StateInfo = new StateInfo
+                {
+                    State = "Draft"
+                }
+            };
+
+            Assert.Throws<NonExistingTransitionException>(() =>
+            {
+                var result = helper.GetMatchingEventTransitionDescriptor(eventDataWithState);
+            });
+        }
+
         private IWorkflowDefinitionLoader GetDefinitionLoader()
         {
             var definitionLoaderMock = new Mock<IWorkflowDefinitionLoader>();

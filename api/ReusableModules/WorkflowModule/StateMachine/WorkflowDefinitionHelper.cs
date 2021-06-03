@@ -60,10 +60,15 @@ namespace WorkflowModule.StateMachine
             var eventName = eventDataWithState.EventPayload.EventName;
             var state = eventDataWithState.StateInfo.State;
 
-            var result = descriptor.EventTransitionDescriptors.First(et =>
+            var result = descriptor.EventTransitionDescriptors.FirstOrDefault(et =>
             {
                 return et.Event == eventName && et.FromState == state;
             });
+
+            if (result == null)
+            {
+                throw new NonExistingTransitionException(eventDataWithState);
+            }
 
             return result;
         }
