@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using WorkflowModule.Interfaces;
-using WorkflowModule.StateMachine.Validators;
 
 namespace WorkflowModule.StateMachine
 {
@@ -28,20 +27,20 @@ namespace WorkflowModule.StateMachine
 
         private void RegisterPrimitiveConverters()
         {
-            foreach (var converterType in GetAllTypes<ITypeConverter>())
+            foreach (var converterType in GetAllTypes<WorkflowHandlerFactory, ITypeConverter>())
             {
                 var name = converterType.Name.Replace("Converter", "").ToLower();
                 var instance = (ITypeConverter)(Activator.CreateInstance(converterType));
-                _validatorTranslator.RegisterConverter(name, instance);
+                RegisterConverter(name, instance);
             }
         }
 
-        private Type[] GetAllTypes<T>()
+        private Type[] GetAllTypes<AnyAssemblyType, InterfaceType>()
         {
-            var types = typeof(WorkflowHandlerFactory).Assembly.GetTypes();
+            var types = typeof(AnyAssemblyType).Assembly.GetTypes();
             var converters = types.Where(t =>
             {
-                var interfaceType = typeof(T);
+                var interfaceType = typeof(InterfaceType);
                 return interfaceType.IsAssignableFrom(t) && !t.IsInterface;
             });
 
@@ -50,12 +49,27 @@ namespace WorkflowModule.StateMachine
 
         private void RegisterDefaultValidators()
         {
-            foreach (var validatorType in GetAllTypes<IInputValidator>())
+            foreach (var validatorType in GetAllTypes<WorkflowHandlerFactory, IInputValidator>())
             {
                 var name = validatorType.Name;
                 var instance = (IInputValidator)(Activator.CreateInstance(validatorType));
-                _validatorTranslator.RegisterValidator(name, instance);
+                RegisterValidator(name, instance);
             }
+        }
+
+        public void RegisterAllReducersFromAssembly<AnyAssemblyType>()
+        {
+            foreach (var reducerType in GetAllTypes<AnyAssemblyType, IEventReducer>())
+            {
+                var name = reducerType.Name;
+                var instance = (IEventReducer)(Activator.CreateInstance(reducerType));
+                RegisterReducer(name, instance);
+            }
+        }
+
+        public void RegisterConverter(string name, ITypeConverter converter)
+        {
+            _validatorTranslator.RegisterConverter(name, converter);
         }
 
         public void RegisterReducer(string name, IEventReducer reducer)

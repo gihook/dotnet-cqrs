@@ -1,4 +1,5 @@
 using System;
+using Newtonsoft.Json.Linq;
 
 namespace IntegrationTests.WorkflowModule.SampleAggregates
 {
@@ -7,7 +8,7 @@ namespace IntegrationTests.WorkflowModule.SampleAggregates
         public string Title { get; set; }
         public string Description { get; set; }
 
-        public object Summary { get; set; }
+        public JObject Summary { get; set; }
 
         public Guid CreatorUserId { get; set; }
     }

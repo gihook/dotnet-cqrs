@@ -1,4 +1,5 @@
 using IntegrationTests.WorkflowModule.SampleAggregates;
+using Newtonsoft.Json.Linq;
 using WorkflowModule.Interfaces;
 using WorkflowModule.Models;
 
@@ -9,13 +10,8 @@ namespace IntegrationTests.WorkflowModule.SampleReducers
         public object Reduce(object currentStateData, EventPayload payload)
         {
             var stateData = currentStateData as SubmissionStateData;
-            stateData.Summary = new
-            {
-                General = new
-                {
-                    Fdoa = "test123"
-                }
-            };
+            var summary = payload.Data["summary"];
+            stateData.Summary = summary as JObject;
 
             return stateData;
         }

@@ -98,9 +98,9 @@ namespace IntegrationTests
                 {
                     summary = new
                     {
-                        general = new
+                        General = new
                         {
-                            fdoa = "test"
+                            Fdoa = "testFdoa"
                         }
                     }
                 }),
@@ -114,6 +114,9 @@ namespace IntegrationTests
 
             Assert.Equal("ManagerReview", stateInfo.State);
             Assert.Equal(title, (stateInfo.StateData as SubmissionStateData).Title);
+            var summary = (stateInfo.StateData as SubmissionStateData).Summary;
+
+            Assert.Equal("testFdoa", summary["General"]["Fdoa"].ToString());
         }
 
         private WorkflowHandler GetWorkflowHandler(IEventStore inputEventStore = null)
@@ -127,8 +130,7 @@ namespace IntegrationTests
 
             var workflowHandlerFactory = new WorkflowHandlerFactory(eventStore, definitionLoader);
 
-            workflowHandlerFactory.RegisterReducer("InitializeSubmission", new InitializeSubmission());
-            workflowHandlerFactory.RegisterReducer("SaveSummary", new SaveSummary());
+            workflowHandlerFactory.RegisterAllReducersFromAssembly<ExampleUsecaseTest>();
 
             return workflowHandlerFactory.CreateWorkflowHandler();
         }
