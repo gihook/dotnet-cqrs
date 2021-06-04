@@ -11,5 +11,7 @@ namespace IntegrationTests.WorkflowModule.SampleAggregates
         public JObject Summary { get; set; }
 
         public Guid CreatorUserId { get; set; }
+
+        public Guid CeoReviewer { get; set; }
     }
 }

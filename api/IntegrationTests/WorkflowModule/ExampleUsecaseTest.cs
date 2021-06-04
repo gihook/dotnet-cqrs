@@ -3,7 +3,6 @@ using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using IntegrationTests.WorkflowModule.SampleAggregates;
-using IntegrationTests.WorkflowModule.SampleReducers;
 using Newtonsoft.Json.Linq;
 using WorkflowModule.EventStore;
 using WorkflowModule.Interfaces;
@@ -51,23 +50,14 @@ namespace IntegrationTests
         public async Task WorkflowHandler_should_move_to_Draft_after_SubmissionCreated_event()
         {
             var workflowHandler = GetWorkflowHandler();
-            var title = "Test Submission 1";
-            var eventPayload = new EventPayload()
-            {
-                AggregateId = AggregateId,
-                Timestamp = DateTime.Now,
-                EventName = "SubmissionCreated",
-                Data = JObject.FromObject(new { title }),
-                OrderNumber = 1,
-                EventExecutor = Executor
-            };
+            var eventPayload = SubmissionCreatedPayload();
 
             await workflowHandler.ExecuteEvent(eventPayload, WorkflowId);
 
             var newState = await workflowHandler.GetCurrentStateInfo(AggregateId, WorkflowId);
 
             Assert.Equal("Draft", newState.State);
-            Assert.Equal(title, (newState.StateData as SubmissionStateData).Title);
+            Assert.Equal("Test Submission 1", (newState.StateData as SubmissionStateData).Title);
             Assert.Equal("", (newState.StateData as SubmissionStateData).Description);
             Assert.Equal(Executor.UserId, (newState.StateData as SubmissionStateData).CreatorUserId);
         }
@@ -77,7 +67,51 @@ namespace IntegrationTests
         {
             var workflowHandler = GetWorkflowHandler();
             var title = "Test Submission 1";
-            var firstPayload = new EventPayload()
+            var firstPayload = SubmissionCreatedPayload();
+
+            await workflowHandler.ExecuteEvent(firstPayload, WorkflowId);
+
+            var secondPayload = SummarySavedPayload();
+
+            await workflowHandler.ExecuteEvent(secondPayload, WorkflowId);
+
+            var stateInfo = await workflowHandler.GetCurrentStateInfo(AggregateId, WorkflowId);
+
+            Assert.Equal("ManagerReview", stateInfo.State);
+            Assert.Equal(title, (stateInfo.StateData as SubmissionStateData).Title);
+            var summary = (stateInfo.StateData as SubmissionStateData).Summary;
+
+            Assert.Equal("testFdoa", summary["General"]["Fdoa"].ToString());
+        }
+
+        [Fact]
+        public async Task WorkflowHandler_should_move_to_CeoReview_after_MoveToCeo_event()
+        {
+            var workflowHandler = GetWorkflowHandler();
+            var firstPayload = SubmissionCreatedPayload();
+
+            await workflowHandler.ExecuteEvent(firstPayload, WorkflowId);
+
+            var secondPayload = SummarySavedPayload();
+
+            await workflowHandler.ExecuteEvent(secondPayload, WorkflowId);
+
+            var ceoUserIdAsString = "33333333-2222-2222-2222-999999999999";
+            var thirdPayload = SentToCeoPayload();
+
+            await workflowHandler.ExecuteEvent(thirdPayload, WorkflowId);
+
+            var state = await workflowHandler.GetCurrentStateInfo(AggregateId, WorkflowId);
+
+            Assert.Equal("CeoReview", state.State);
+            var ceoUserId = Guid.Parse(ceoUserIdAsString);
+            Assert.Equal(ceoUserId, (state.StateData as SubmissionStateData).CeoReviewer);
+        }
+
+        private EventPayload SubmissionCreatedPayload()
+        {
+            var title = "Test Submission 1";
+            return new EventPayload()
             {
                 AggregateId = AggregateId,
                 Timestamp = DateTime.Now,
@@ -86,10 +120,11 @@ namespace IntegrationTests
                 OrderNumber = 1,
                 EventExecutor = Executor
             };
+        }
 
-            await workflowHandler.ExecuteEvent(firstPayload, WorkflowId);
-
-            var secondPayload = new EventPayload()
+        private EventPayload SummarySavedPayload()
+        {
+            return new EventPayload()
             {
                 AggregateId = AggregateId,
                 Timestamp = DateTime.Now,
@@ -107,16 +142,23 @@ namespace IntegrationTests
                 OrderNumber = 2,
                 EventExecutor = Executor
             };
+        }
 
-            await workflowHandler.ExecuteEvent(secondPayload, WorkflowId);
-
-            var stateInfo = await workflowHandler.GetCurrentStateInfo(AggregateId, WorkflowId);
-
-            Assert.Equal("ManagerReview", stateInfo.State);
-            Assert.Equal(title, (stateInfo.StateData as SubmissionStateData).Title);
-            var summary = (stateInfo.StateData as SubmissionStateData).Summary;
-
-            Assert.Equal("testFdoa", summary["General"]["Fdoa"].ToString());
+        private EventPayload SentToCeoPayload()
+        {
+            var ceoUserIdAsString = "33333333-2222-2222-2222-999999999999";
+            return new EventPayload()
+            {
+                AggregateId = AggregateId,
+                Timestamp = DateTime.Now,
+                EventName = "SentToCeo",
+                Data = JObject.FromObject(new
+                {
+                    ceoUserId = ceoUserIdAsString
+                }),
+                OrderNumber = 3,
+                EventExecutor = Executor
+            };
         }
 
         private WorkflowHandler GetWorkflowHandler(IEventStore inputEventStore = null)
