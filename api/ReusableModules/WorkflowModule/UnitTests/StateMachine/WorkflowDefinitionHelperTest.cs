@@ -31,7 +31,7 @@ namespace UnitTests.WorkflowModule.StateMachine
 
             var definitionLoader = GetDefinitionLoader();
 
-            var helper = new WorkflowDefinitionHelper(definitionLoader);
+            var helper = new StateMachineDefinitionHelper(definitionLoader);
             var result = helper.EventIsAllowed(data);
 
             Assert.True(result);
@@ -57,7 +57,7 @@ namespace UnitTests.WorkflowModule.StateMachine
 
             var definitionLoader = GetDefinitionLoader();
 
-            var helper = new WorkflowDefinitionHelper(definitionLoader);
+            var helper = new StateMachineDefinitionHelper(definitionLoader);
             var result = helper.EventIsAllowed(data);
 
             Assert.False(result);
@@ -73,7 +73,7 @@ namespace UnitTests.WorkflowModule.StateMachine
 
             var definitionLoader = GetDefinitionLoader();
 
-            var helper = new WorkflowDefinitionHelper(definitionLoader);
+            var helper = new StateMachineDefinitionHelper(definitionLoader);
 
             Assert.Throws<UnknownWorkflowException>(() => helper.EventIsAllowed(data));
         }
@@ -93,7 +93,7 @@ namespace UnitTests.WorkflowModule.StateMachine
 
             var definitionLoader = GetDefinitionLoader();
 
-            var helper = new WorkflowDefinitionHelper(definitionLoader);
+            var helper = new StateMachineDefinitionHelper(definitionLoader);
             var result = helper.GetEventDescriptor(data);
 
             Assert.Equal("ExampleReducer", result.ReducerDescriptor.Type);
@@ -114,7 +114,7 @@ namespace UnitTests.WorkflowModule.StateMachine
 
             var definitionLoader = GetDefinitionLoader();
 
-            var helper = new WorkflowDefinitionHelper(definitionLoader);
+            var helper = new StateMachineDefinitionHelper(definitionLoader);
 
             Assert.Throws<UnknownEventException>(() => helper.GetEventDescriptor(data));
         }
@@ -123,7 +123,7 @@ namespace UnitTests.WorkflowModule.StateMachine
         public void GetMatchingEventTransitionDescriptor_should_return_matched_transition()
         {
             var definitionLoader = GetDefinitionLoader();
-            var helper = new WorkflowDefinitionHelper(definitionLoader);
+            var helper = new StateMachineDefinitionHelper(definitionLoader);
 
             var eventDataWithState = new EventDataWithState
             {
@@ -149,7 +149,7 @@ namespace UnitTests.WorkflowModule.StateMachine
         public void GetMatchingEventTransitionDescriptor_should_throw_NonExistingTransitionException()
         {
             var definitionLoader = GetDefinitionLoader();
-            var helper = new WorkflowDefinitionHelper(definitionLoader);
+            var helper = new StateMachineDefinitionHelper(definitionLoader);
 
             var eventDataWithState = new EventDataWithState
             {

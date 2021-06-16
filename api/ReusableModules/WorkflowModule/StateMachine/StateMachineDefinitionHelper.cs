@@ -7,11 +7,11 @@ using WorkflowModule.Models;
 
 namespace WorkflowModule.StateMachine
 {
-    public class WorkflowDefinitionHelper : IWorkflowDefinitionHelper
+    public class StateMachineDefinitionHelper : IWorkflowDefinitionHelper
     {
         private readonly Dictionary<string, WorkflowDescriptor> _workflowDescriptors;
 
-        public WorkflowDefinitionHelper(IWorkflowDefinitionLoader definitionLoader)
+        public StateMachineDefinitionHelper(IWorkflowDefinitionLoader definitionLoader)
         {
             _workflowDescriptors = definitionLoader.LoadWorkflows();
         }

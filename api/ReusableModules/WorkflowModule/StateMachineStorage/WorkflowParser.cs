@@ -6,9 +6,9 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 
-namespace WorkflowModule.WorkflowStorage
+namespace WorkflowModule.StateMachineStorage
 {
-    public class WorkflowParser
+    public class StateMachineParser
     {
         public WorkflowDescriptor GetWorkflowDescriptor(string yamlContent)
         {

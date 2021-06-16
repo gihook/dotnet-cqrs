@@ -1,5 +1,5 @@
 using System.Linq;
-using WorkflowModule.WorkflowStorage;
+using WorkflowModule.StateMachineStorage;
 using Xunit;
 
 namespace UnitTests.WorkflowStorage
@@ -27,7 +27,7 @@ states:
   - VotingFinished
   - Closed
 ";
-            var workflowParser = new WorkflowParser();
+            var workflowParser = new StateMachineParser();
             var workflowDescriptor = workflowParser.GetWorkflowDescriptor(yamlContent);
 
             Assert.Equal("SubmissionsWorkflow", workflowDescriptor.Id);
@@ -62,7 +62,7 @@ events:
     reducer: PasteInputs
 ";
 
-            var workflowParser = new WorkflowParser();
+            var workflowParser = new StateMachineParser();
             var workflowDescriptor = workflowParser.GetWorkflowDescriptor(yamlContent);
 
             Assert.Single(workflowDescriptor.EventDescriptors);
@@ -97,7 +97,7 @@ events:
       type: SampleNamespace.SampleReducer
       params: [EVENT_INPUTS.test, 42, ""Test""]
 ";
-            var workflowParser = new WorkflowParser();
+            var workflowParser = new StateMachineParser();
             var workflowDescriptor = workflowParser.GetWorkflowDescriptor(yamlContent);
             var firstEventDescriptor = workflowDescriptor.EventDescriptors.First();
 
@@ -126,7 +126,7 @@ eventTransitions:
     fromState: ManagerReview
     toState: FinalState
 ";
-            var workflowParser = new WorkflowParser();
+            var workflowParser = new StateMachineParser();
             var workflowDescriptor = workflowParser.GetWorkflowDescriptor(yamlContent);
             var eventTransitionDescriptors = workflowDescriptor.EventTransitionDescriptors;
 

@@ -8,7 +8,7 @@ using WorkflowModule.EventStore;
 using WorkflowModule.Interfaces;
 using WorkflowModule.Models;
 using WorkflowModule.StateMachine;
-using WorkflowModule.WorkflowStorage;
+using WorkflowModule.StateMachineStorage;
 using Xunit;
 
 namespace IntegrationTests

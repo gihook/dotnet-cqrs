@@ -21,7 +21,7 @@ namespace WorkflowModule.StateMachine
             RegisterPrimitiveConverters();
             RegisterDefaultValidators();
 
-            _definitionHelper = new WorkflowDefinitionHelper(_definitionLoader);
+            _definitionHelper = new StateMachineDefinitionHelper(_definitionLoader);
             _reducerTranslator = new ReducerTranslator(_definitionHelper);
         }
 

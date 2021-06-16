@@ -1,6 +1,6 @@
 using System.IO;
 using System.Reflection;
-using WorkflowModule.WorkflowStorage;
+using WorkflowModule.StateMachineStorage;
 using Xunit;
 
 namespace UnitTests.WorkflowStorage

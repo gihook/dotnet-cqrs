@@ -3,7 +3,7 @@ using System.IO;
 using WorkflowModule.Descriptors;
 using WorkflowModule.Interfaces;
 
-namespace WorkflowModule.WorkflowStorage
+namespace WorkflowModule.StateMachineStorage
 {
     public class FileWorkflowDefinitionLoader : IWorkflowDefinitionLoader
     {
@@ -18,7 +18,7 @@ namespace WorkflowModule.WorkflowStorage
         {
             var descriptors = new Dictionary<string, WorkflowDescriptor>();
             var files = Directory.EnumerateFiles(_folderContainingWorkflowSpecifications);
-            var parser = new WorkflowParser();
+            var parser = new StateMachineParser();
 
             foreach (var file in files)
             {
