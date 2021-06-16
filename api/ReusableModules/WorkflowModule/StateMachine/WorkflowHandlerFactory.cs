@@ -4,7 +4,7 @@ using WorkflowModule.Interfaces;
 
 namespace WorkflowModule.StateMachine
 {
-    public class WorkflowHandlerFactory
+    public class StateMachineHandlerFactory
     {
         private readonly IEventStore _eventStore;
         private readonly IWorkflowDefinitionLoader _definitionLoader;
@@ -12,7 +12,7 @@ namespace WorkflowModule.StateMachine
         private readonly ValidatorTranslator _validatorTranslator;
         private readonly IWorkflowDefinitionHelper _definitionHelper;
 
-        public WorkflowHandlerFactory(IEventStore eventStore, IWorkflowDefinitionLoader definitionLoader)
+        public StateMachineHandlerFactory(IEventStore eventStore, IWorkflowDefinitionLoader definitionLoader)
         {
             _eventStore = eventStore;
             _definitionLoader = definitionLoader;
@@ -27,7 +27,7 @@ namespace WorkflowModule.StateMachine
 
         private void RegisterPrimitiveConverters()
         {
-            foreach (var converterType in GetAllTypes<WorkflowHandlerFactory, ITypeConverter>())
+            foreach (var converterType in GetAllTypes<StateMachineHandlerFactory, ITypeConverter>())
             {
                 var name = converterType.Name.Replace("Converter", "").ToLower();
                 var instance = (ITypeConverter)(Activator.CreateInstance(converterType));
@@ -49,7 +49,7 @@ namespace WorkflowModule.StateMachine
 
         private void RegisterDefaultValidators()
         {
-            foreach (var validatorType in GetAllTypes<WorkflowHandlerFactory, IInputValidator>())
+            foreach (var validatorType in GetAllTypes<StateMachineHandlerFactory, IInputValidator>())
             {
                 var name = validatorType.Name;
                 var instance = (IInputValidator)(Activator.CreateInstance(validatorType));
@@ -82,7 +82,7 @@ namespace WorkflowModule.StateMachine
             _validatorTranslator.RegisterValidator(name, validator);
         }
 
-        public WorkflowHandler CreateWorkflowHandler()
+        public StateMachineHandler CreateStateMachineHandler()
         {
             var parameterTranslator = new ParameterTranslator();
 
@@ -98,7 +98,7 @@ namespace WorkflowModule.StateMachine
                 _validatorTranslator,
                 parameterTranslator);
 
-            var workflowHandler = new WorkflowHandler(stateCalculator, eventValidationExecutor);
+            var workflowHandler = new StateMachineHandler(stateCalculator, eventValidationExecutor);
 
             return workflowHandler;
         }

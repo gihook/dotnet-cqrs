@@ -7,12 +7,12 @@ using WorkflowModule.Models;
 
 namespace WorkflowModule.StateMachine
 {
-    public class WorkflowHandler
+    public class StateMachineHandler
     {
         private readonly IStateCalculator _stateCalculator;
         private readonly IEventValidationExecutor _eventValidationExecutor;
 
-        public WorkflowHandler(IStateCalculator stateCalculator, IEventValidationExecutor eventValidationExecutor)
+        public StateMachineHandler(IStateCalculator stateCalculator, IEventValidationExecutor eventValidationExecutor)
         {
             _stateCalculator = stateCalculator;
             _eventValidationExecutor = eventValidationExecutor;

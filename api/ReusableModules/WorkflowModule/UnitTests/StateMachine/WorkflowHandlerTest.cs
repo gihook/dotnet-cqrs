@@ -24,7 +24,7 @@ namespace UnitTests.WorkflowModule.StateMachine
                 .Setup(sc => sc.GetCurrentStateInfo(aggregateId, workflowId))
                 .ReturnsAsync(StateInfo.NullState);
 
-            var workflowHandler = new WorkflowHandler(stateCalculator.Object, null);
+            var workflowHandler = new StateMachineHandler(stateCalculator.Object, null);
 
             var stateInfo = await workflowHandler.GetCurrentStateInfo(aggregateId, workflowId);
 
@@ -47,7 +47,7 @@ namespace UnitTests.WorkflowModule.StateMachine
                     .Setup(ev => ev.ValidateEvent(It.IsAny<StateInfo>(), It.IsAny<EventPayload>(), workflowId))
                     .Returns(Enumerable.Empty<ValidationError>());
 
-            var workflowHandler = new WorkflowHandler(stateCalculator.Object, eventValidationExecutor.Object);
+            var workflowHandler = new StateMachineHandler(stateCalculator.Object, eventValidationExecutor.Object);
 
             var payload = new EventPayload();
             payload.AggregateId = aggregateId;
@@ -70,7 +70,7 @@ namespace UnitTests.WorkflowModule.StateMachine
             .Setup(ev => ev.ValidateEvent(It.IsAny<StateInfo>(), It.IsAny<EventPayload>(), workflowId))
                     .Returns(new List<ValidationError>() { new ValidationError() });
 
-            var workflowHandler = new WorkflowHandler(stateCalculator.Object, eventValidationExecutor.Object);
+            var workflowHandler = new StateMachineHandler(stateCalculator.Object, eventValidationExecutor.Object);
 
             var payload = new EventPayload();
             payload.AggregateId = aggregateId;

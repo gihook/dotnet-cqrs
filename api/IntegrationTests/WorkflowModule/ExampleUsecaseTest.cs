@@ -37,9 +37,9 @@ namespace IntegrationTests
         }
 
         [Fact]
-        public async Task WorkflowHandler_should_return_NULL_STATE_initially()
+        public async Task StateMachineHandler_should_return_NULL_STATE_initially()
         {
-            var workflowHandler = GetWorkflowHandler();
+            var workflowHandler = GetStateMachineHandler();
 
             var result = await workflowHandler.GetCurrentStateInfo(AggregateId, WorkflowId);
 
@@ -47,9 +47,9 @@ namespace IntegrationTests
         }
 
         [Fact]
-        public async Task WorkflowHandler_should_move_to_Draft_after_SubmissionCreated_event()
+        public async Task StateMachineHandler_should_move_to_Draft_after_SubmissionCreated_event()
         {
-            var workflowHandler = GetWorkflowHandler();
+            var workflowHandler = GetStateMachineHandler();
             var eventPayload = SubmissionCreatedPayload();
 
             await workflowHandler.ExecuteEvent(eventPayload, WorkflowId);
@@ -63,9 +63,9 @@ namespace IntegrationTests
         }
 
         [Fact]
-        public async Task WorkflowHandler_should_move_to_ManagerReview_when_summary_with_fdoa_is_saved()
+        public async Task StateMachineHandler_should_move_to_ManagerReview_when_summary_with_fdoa_is_saved()
         {
-            var workflowHandler = GetWorkflowHandler();
+            var workflowHandler = GetStateMachineHandler();
             var title = "Test Submission 1";
             var firstPayload = SubmissionCreatedPayload();
 
@@ -85,9 +85,9 @@ namespace IntegrationTests
         }
 
         [Fact]
-        public async Task WorkflowHandler_should_move_to_CeoReview_after_MoveToCeo_event()
+        public async Task StateMachineHandler_should_move_to_CeoReview_after_MoveToCeo_event()
         {
-            var workflowHandler = GetWorkflowHandler();
+            var workflowHandler = GetStateMachineHandler();
             var firstPayload = SubmissionCreatedPayload();
 
             await workflowHandler.ExecuteEvent(firstPayload, WorkflowId);
@@ -161,7 +161,7 @@ namespace IntegrationTests
             };
         }
 
-        private WorkflowHandler GetWorkflowHandler(IEventStore inputEventStore = null)
+        private StateMachineHandler GetStateMachineHandler(IEventStore inputEventStore = null)
         {
             var assemblyLocation = Assembly.GetEntryAssembly().Location;
             var assemblyFolder = Path.GetDirectoryName(assemblyLocation);
@@ -170,11 +170,11 @@ namespace IntegrationTests
             var definitionLoader = new FileWorkflowDefinitionLoader(specificationsLocation);
             var eventStore = inputEventStore ?? new InMemoryEventStore();
 
-            var workflowHandlerFactory = new WorkflowHandlerFactory(eventStore, definitionLoader);
+            var workflowHandlerFactory = new StateMachineHandlerFactory(eventStore, definitionLoader);
 
             workflowHandlerFactory.RegisterAllReducersFromAssembly<ExampleUsecaseTest>();
 
-            return workflowHandlerFactory.CreateWorkflowHandler();
+            return workflowHandlerFactory.CreateStateMachineHandler();
         }
     }
 }
