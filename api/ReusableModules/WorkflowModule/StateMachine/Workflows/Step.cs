@@ -13,6 +13,12 @@ namespace WorkflowModule.StateMachine.Workflows
 
         public abstract StepState StepState { get; }
 
-        public abstract bool IsCompleted { get; }
+        public bool IsCompleted
+        {
+            get
+            {
+                return StepState != StepState.InProgress;
+            }
+        }
     }
 }

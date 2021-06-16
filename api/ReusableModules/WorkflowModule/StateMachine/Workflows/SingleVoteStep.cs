@@ -26,14 +26,6 @@ namespace WorkflowModule.StateMachine.Workflows
             }
         }
 
-        public override bool IsCompleted
-        {
-            get
-            {
-                return StepState != StepState.InProgress;
-            }
-        }
-
         public SingleVoteStep(IEnumerable<Guid> users)
         {
             AssignedUsers = users;

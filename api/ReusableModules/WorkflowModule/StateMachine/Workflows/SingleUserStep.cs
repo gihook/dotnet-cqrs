@@ -8,14 +8,6 @@ namespace WorkflowModule.StateMachine.Workflows
 
         public override StepState StepState => _stepState;
 
-        public override bool IsCompleted
-        {
-            get
-            {
-                return StepState.Approved == StepState;
-            }
-        }
-
         public SingleUserStep(Guid user)
         {
             AssignedUsers = new Guid[] { user };

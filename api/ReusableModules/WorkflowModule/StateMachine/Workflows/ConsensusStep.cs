@@ -10,7 +10,12 @@ namespace WorkflowModule.StateMachine.Workflows
         {
             get
             {
-                if (!IsCompleted) return StepState.InProgress;
+                var numberOfVotes = Votes.Count();
+                var numberOfAssignedUsers = AssignedUsers.Count();
+
+                var isCompleted = numberOfAssignedUsers == numberOfVotes;
+
+                if (!isCompleted) return StepState.InProgress;
 
                 var hasConsensus = AssignedUsers.All(u =>
                 {
@@ -20,17 +25,6 @@ namespace WorkflowModule.StateMachine.Workflows
                 if (hasConsensus) return StepState.Approved;
 
                 return StepState.Rejected;
-            }
-        }
-
-        public override bool IsCompleted
-        {
-            get
-            {
-                var numberOfVotes = Votes.Count();
-                var numberOfAssignedUsers = AssignedUsers.Count();
-
-                return numberOfVotes == numberOfAssignedUsers;
             }
         }
 
