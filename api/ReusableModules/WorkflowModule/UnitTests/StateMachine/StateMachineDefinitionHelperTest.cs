@@ -9,7 +9,7 @@ using Xunit;
 
 namespace UnitTests.WorkflowModule.StateMachine
 {
-    public class WorkflowDefinitionHelperTest
+    public class StateMachineDefinitionHelperTest
     {
         [Fact]
         public void EventIsAllowed_should_return_true_when_fsm_allows_it()

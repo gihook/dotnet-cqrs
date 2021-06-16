@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace UnitTests.WorkflowModule.StateMachine
 {
-    public class WorkflowHandlerTest
+    public class StateMachineHandlerTest
     {
         [Fact]
         public async Task Should_Return_Correct_State_Info()
