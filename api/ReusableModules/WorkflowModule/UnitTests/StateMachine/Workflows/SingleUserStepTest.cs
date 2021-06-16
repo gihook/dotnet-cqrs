@@ -27,7 +27,7 @@ namespace UnitTests.StateMachine.Workflows
             var userId = new Guid();
             var step = new SingleUserStep(userId);
 
-            step.Approve();
+            step.GoToNextStep();
 
             Assert.Equal(StepState.Approved, step.StepState);
             Assert.True(step.IsCompleted);

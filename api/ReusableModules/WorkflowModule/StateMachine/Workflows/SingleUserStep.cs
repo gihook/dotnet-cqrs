@@ -14,7 +14,7 @@ namespace WorkflowModule.StateMachine.Workflows
             _stepState = StepState.InProgress;
         }
 
-        public void Approve()
+        public void GoToNextStep()
         {
             _stepState = StepState.Approved;
         }
