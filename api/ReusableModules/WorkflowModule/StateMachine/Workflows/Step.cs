@@ -46,5 +46,7 @@ namespace WorkflowModule.StateMachine.Workflows
                         });
             }
         }
+
+        public abstract void Reset();
     }
 }

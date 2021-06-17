@@ -16,5 +16,10 @@ namespace WorkflowModule.StateMachine.Workflows
         {
             return Votes.ContainsKey(userId) ? Votes[userId] : VotingOptions.None;
         }
+
+        public override void Reset()
+        {
+            Votes = new Dictionary<Guid, VotingOptions>();
+        }
     }
 }

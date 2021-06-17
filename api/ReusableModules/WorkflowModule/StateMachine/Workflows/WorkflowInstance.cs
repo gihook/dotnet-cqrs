@@ -13,7 +13,23 @@ namespace WorkflowModule.StateMachine.Workflows
 
         public IEnumerable<Step> Steps { get; set; }
 
-        public WorkflowDecision Decision => _decision;
+        public WorkflowDecision Decision
+        {
+            get
+            {
+                var stepCount = Steps.Count();
+                var workflowDone = CurrentStepIndex == stepCount;
+
+                if (workflowDone)
+                {
+                    var lastStep = Steps.ElementAt(CurrentStepIndex - 1);
+
+                    return (WorkflowDecision)lastStep.StepState;
+                }
+
+                return _decision;
+            }
+        }
 
         public IEnumerable<string> AvailableActions
         {
@@ -29,6 +45,14 @@ namespace WorkflowModule.StateMachine.Workflows
             var type = step.GetType();
             var methodInfo = type.GetMethod(actionName);
             methodInfo.Invoke(step, parameters);
+        }
+
+        public void ReturnToOriginator()
+        {
+            foreach (var step in Steps)
+            {
+                step.Reset();
+            }
         }
     }
 }

@@ -19,7 +19,7 @@ namespace WorkflowModule.StateMachine.Workflows
             _stepState = StepState.Approved;
         }
 
-        public void Reset()
+        public override void Reset()
         {
             _stepState = StepState.InProgress;
         }

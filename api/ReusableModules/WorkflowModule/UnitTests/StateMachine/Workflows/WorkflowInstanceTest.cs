@@ -105,27 +105,53 @@ namespace UnitTests.StateMachine.Workflows
             Assert.Equal("second-step", instance.CurrentStep.Id);
         }
 
-        /* [Fact] */
-        /* public void Decision_should_be_taken_from_last_step() */
-        /* { */
-        /*     var userId = Guid.NewGuid(); */
-        /*     var firstStepMock = new Mock<Step>(); */
-        /*     firstStepMock.Setup(x => x.StepState).Returns(StepState.Approved); */
+        [Fact]
+        public void Decision_should_be_taken_from_last_step()
+        {
+            var userId = Guid.NewGuid();
+            var firstStepMock = new Mock<Step>();
+            firstStepMock.Setup(x => x.StepState).Returns(StepState.Approved);
+            firstStepMock.Setup(x => x.IsCompleted).Returns(true);
 
-        /*     var firstStep = firstStepMock.Object; */
-        /*     firstStep.Id = "first-step"; */
+            var firstStep = firstStepMock.Object;
+            firstStep.Id = "first-step";
 
-        /*     var secondStepMock = new Mock<Step>(); */
-        /*     secondStepMock.Setup(x => x.StepState).Returns(StepState.Rejected); */
+            var secondStepMock = new Mock<Step>();
+            secondStepMock.Setup(x => x.StepState).Returns(StepState.Rejected);
+            secondStepMock.Setup(x => x.IsCompleted).Returns(true);
 
-        /*     var secondStep = secondStepMock.Object; */
-        /*     firstStep.Id = "second-step"; */
+            var secondStep = secondStepMock.Object;
+            firstStep.Id = "second-step";
 
-        /*     var steps = new Step[] { firstStep, secondStep }; */
-        /*     var instance = new WorkflowInstance(); */
-        /*     instance.Steps = steps; */
+            var steps = new Step[] { firstStep, secondStep };
+            var instance = new WorkflowInstance();
+            instance.Steps = steps;
 
-        /*     Assert.Equal(WorkflowDecision.Rejected, instance.Decision); */
-        /* } */
+            Assert.Equal(WorkflowDecision.Rejected, instance.Decision);
+        }
+
+        [Fact]
+        public void ReturnToOriginator_should_reset_all_steps_and_set_first_step_as_current()
+        {
+            var userId = Guid.NewGuid();
+            var firstStep = new SingleUserStep(userId);
+            firstStep.Id = "first-step";
+
+            var secondStep = new ConsensusStep(new Guid[] { userId });
+            secondStep.Id = "second-step";
+
+            var instance = new WorkflowInstance();
+            var steps = new Step[] { firstStep, secondStep };
+            instance.Steps = steps;
+
+            instance.ExecuteAction("GoToNextStep", new object[] { });
+            instance.ExecuteAction("Vote", new object[] { userId, VotingOptions.Approve });
+
+            Assert.Null(instance.CurrentStep);
+
+            instance.ReturnToOriginator();
+
+            Assert.Equal("first-step", instance.CurrentStep.Id);
+        }
     }
 }
