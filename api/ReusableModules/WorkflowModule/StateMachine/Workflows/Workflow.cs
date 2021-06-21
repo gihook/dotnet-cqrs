@@ -23,5 +23,18 @@ namespace WorkflowModule.StateMachine.Workflows
             var nextStepId = CurrentStep.ExecuteAction(actionName, userId);
             CurrentStep = Steps[nextStepId];
         }
+
+        public static bool AreValidSteps(IEnumerable<Step> steps)
+        {
+            var hasOriginatorStep = steps.Any(s => s.Id == Step.ORIGINATOR_STEP_ID);
+            if (!hasOriginatorStep) return false;
+
+            var hasAcceptedStep = steps.Any(s => s.Id == Step.ACCEPTED_STEP_ID);
+            var hasRejectedStep = steps.Any(s => s.Id == Step.REJECTED_STEP_ID);
+
+            if (!hasAcceptedStep || !hasRejectedStep) return false;
+
+            return true;
+        }
     }
 }

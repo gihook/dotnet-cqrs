@@ -15,8 +15,6 @@ namespace WorkflowModule.StateMachine.Workflows
         public string StatusLabel { get; set; }
         public IEnumerable<Guid> AssignedUsers { get; set; }
 
-        public StepStatus StepStatus { get; set; }
-
         public virtual IEnumerable<string> StepActions { get; } = Enumerable.Empty<string>();
 
         public abstract string ExecuteAction(string actionName, Guid userId);

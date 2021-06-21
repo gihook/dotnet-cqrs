@@ -25,12 +25,6 @@ namespace UnitTests.StateMachine.Workflows
             Assert.True(wf.Steps.ContainsKey("originator-step"));
             Assert.True(wf.Steps.ContainsKey("accepted-step"));
             Assert.True(wf.Steps.ContainsKey("rejected-step"));
-
-            var finalApproved = wf.Steps["accepted-step"];
-            Assert.Equal(StepStatus.Accepted, finalApproved.StepStatus);
-
-            var finalRejected = wf.Steps["rejected-step"];
-            Assert.Equal(StepStatus.Rejected, finalRejected.StepStatus);
             Assert.False(wf.IsCompleted);
         }
 
@@ -54,6 +48,24 @@ namespace UnitTests.StateMachine.Workflows
 
             Assert.Equal(wf.CurrentStep.Id, "accepted-step");
             Assert.True(wf.IsCompleted);
+        }
+
+        [Fact]
+        public void AreValidSteps_should_return_false_without_originator_step()
+        {
+            var steps = new Step[0];
+            Assert.False(Workflow.AreValidSteps(steps));
+        }
+
+        [Fact]
+        public void AreValidSteps_should_return_false_without_accepted_and_rejected_steps()
+        {
+            var originatorStepMock = new Mock<Step>();
+            var originatorStep = originatorStepMock.Object;
+            originatorStep.Id = "originator-step";
+
+            var steps = new Step[] { originatorStep };
+            Assert.False(Workflow.AreValidSteps(steps));
         }
     }
 }

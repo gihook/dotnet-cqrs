@@ -10,7 +10,6 @@ namespace WorkflowModule.StateMachine.Workflows.StepImplementations
         {
             var step = new FinalStep();
             step.Id = Step.ACCEPTED_STEP_ID;
-            step.StepStatus = StepStatus.Accepted;
 
             return step;
         }
@@ -19,7 +18,6 @@ namespace WorkflowModule.StateMachine.Workflows.StepImplementations
         {
             var step = new FinalStep();
             step.Id = Step.REJECTED_STEP_ID;
-            step.StepStatus = StepStatus.Rejected;
 
             return step;
         }
