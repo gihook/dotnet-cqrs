@@ -4,6 +4,6 @@ namespace WorkflowModule.StateMachine.Workflows
     {
         public string Id { get; set; }
         public string Label { get; set; }
-        public int NextStepId { get; set; }
+        public string NextStepId { get; set; }
     }
 }

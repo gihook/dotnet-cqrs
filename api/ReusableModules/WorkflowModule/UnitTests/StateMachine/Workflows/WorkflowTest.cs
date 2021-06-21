@@ -46,7 +46,7 @@ namespace UnitTests.StateMachine.Workflows
             var wf = new Workflow(new Step[] { originatorStep, acceptedStep });
             wf.ExecuteAction(actionName, userId);
 
-            Assert.Equal(wf.CurrentStep.Id, "accepted-step");
+            Assert.Equal("accepted-step", wf.CurrentStep.Id);
             Assert.True(wf.IsCompleted);
         }
 
